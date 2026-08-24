@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>tailwind-container-break-out-v4 example</title>
+    <link rel="stylesheet" href="output.css" />
+  </head>
+  <body>
+    <div class="container">
+      <p>Inside the container.</p>
+
+      <div class="mx-break-out bg-slate-800 text-white p-4">
+        This bleeds full-width past the container on both sides
+        (<code>.mx-break-out</code>).
+      </div>
+
+      <div class="ml-break-out bg-slate-600 text-white p-4">
+        This bleeds full-width past the container on the left only
+        (<code>.ml-break-out</code>).
+      </div>
+
+      <div class="px-break-out bg-slate-100 p-4">
+        This bleeds full-width but keeps its own content aligned to the
+        container (<code>.px-break-out</code>).
+      </div>
+    </div>
+  </body>
+</html>

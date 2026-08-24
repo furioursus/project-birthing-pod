@@ -1,0 +1,32 @@
+{
+  "name": "tailwind-container-break-out-v4",
+  "version": "1.0.0",
+  "description": "A TailwindCSS v4 (and v3) compatible plugin for breaking child elements out of a `.container`. Fork of tailwind-container-break-out, fixed for v4's stricter utility-selector rules.",
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "echo \"no tests yet\" && exit 0"
+  },
+  "keywords": [
+    "tailwindcss",
+    "tailwindcss-plugin",
+    "tailwind",
+    "container",
+    "break-out",
+    "margins",
+    "pull",
+    "full-bleed"
+  ],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/LucidNinja/tailwind-container-break-out",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucidNinja/tailwind-container-break-out"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  }
+}
