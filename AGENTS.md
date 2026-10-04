@@ -13,6 +13,7 @@ This repository is a shared workspace for early-stage projects. Each project liv
 - One project per top-level folder, named in kebab-case (for example, `bluesky-slurp-v2`).
 - Never rename or move a top-level folder. Renames break history extraction later. If a project needs a new name, flag it instead of renaming it.
 - Each folder is self-contained: its own `package.json`, lockfile, config, and dependencies. Do not add a root `package.json` or workspace configuration.
+- Use npm for every project. Before working in a folder, run `npm ci` there, or `npm install` if it has no `package-lock.json` yet, and commit the lockfile. Do not use pnpm, Yarn, or Bun, even though the environment has them installed.
 - Every project folder has its own `README.md` describing what it is, and may have its own `AGENTS.md` for project-specific instructions.
 
 ## Starting a new project
