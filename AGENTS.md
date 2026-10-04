@@ -27,7 +27,7 @@ This repository is a shared workspace for early-stage projects. Each project liv
 - One project per commit. A commit must never touch files in more than one project folder, or a project folder and root configuration together.
 - Use Conventional Commits: `type(scope): subject`, with the project folder name as the scope (for example, `feat(bluesky-slurp-v2): add export button`). Use `workspace` as the scope for root-level changes.
 - Subjects are lowercase, imperative, and have no trailing period.
-- Never add `Co-Authored-By` trailers, session links, "Generated with" footers, or any other AI or tool attribution to commit messages or pull request descriptions.
+- Leave attribution as Claude Code produces it. Do not add or strip `Co-Authored-By` trailers, session links, or "Generated with" footers by hand. Cloud sessions add them by default and local sessions suppress them through user settings, so their presence marks a commit or pull request as made remotely.
 
 ## Branches and pull requests
 
