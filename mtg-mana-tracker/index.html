@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16131c" />
+    <meta name="description" content="Track the mana in your pool during a game of Magic: The Gathering." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Mana Pool</title>
+  </head>
+  <body>
+    <header class="bar">
+      <h1>Mana Pool</h1>
+      <span class="turn" id="turn"></span>
+      <button class="icon-btn" id="undo" data-action="undo" aria-label="Undo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" /></svg>
+      </button>
+      <button class="icon-btn" data-action="open-more" aria-label="More actions">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="12" cy="19" r="1" /></svg>
+      </button>
+    </header>
+
+    <main>
+      <nav class="steps" id="steps" aria-label="Turn steps"></nav>
+
+      <section class="pool" id="pool" aria-label="Mana pool"></section>
+
+      <div class="total" id="total" aria-live="polite"></div>
+
+      <fieldset class="duration" id="duration">
+        <legend>New mana lasts</legend>
+      </fieldset>
+
+      <div class="actions">
+        <button class="btn" data-action="empty">Empty pool</button>
+        <button class="btn primary" data-action="next" id="next"></button>
+      </div>
+
+      <section class="effects" aria-labelledby="effects-title">
+        <div class="section-head">
+          <h2 id="effects-title">On the battlefield</h2>
+          <button class="btn small" data-action="open-cards">+ Card</button>
+        </div>
+        <ul class="chips" id="active-cards"></ul>
+        <p class="summary" id="summary"></p>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="cards-dialog" aria-labelledby="cards-title">
+      <form method="dialog" class="sheet">
+        <div class="section-head">
+          <h2 id="cards-title">Cards that change emptying</h2>
+          <button class="icon-btn" value="close" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+        <ul class="card-list" id="card-list"></ul>
+      </form>
+      <form class="sheet custom" id="custom-form">
+        <h3>Add your own</h3>
+        <label class="field">
+          <span>Card name</span>
+          <input name="name" required maxlength="60" autocomplete="off" />
+        </label>
+        <div class="field">
+          <span>When mana would be lost</span>
+          <label class="radio"><input type="radio" name="kind" value="convert" checked /> It becomes one color</label>
+          <label class="radio"><input type="radio" name="kind" value="keep" /> These colors stay</label>
+        </div>
+        <div class="color-picks" id="custom-colors"></div>
+        <button class="btn primary" type="submit">Add card</button>
+      </form>
+    </dialog>
+
+    <dialog id="choose-dialog" aria-labelledby="choose-title">
+      <form method="dialog" class="sheet">
+        <h2 id="choose-title">Which replacement applies?</h2>
+        <p class="hint">More than one card turns lost mana into a color. You choose which one applies.</p>
+        <div class="choice-list" id="choice-list"></div>
+        <button class="btn" value="cancel">Cancel</button>
+      </form>
+    </dialog>
+
+    <dialog id="more-dialog" aria-labelledby="more-title">
+      <form method="dialog" class="sheet">
+        <div class="section-head">
+          <h2 id="more-title">More</h2>
+          <button class="icon-btn" value="close" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+        <h3>Convert the whole pool to</h3>
+        <div class="color-picks" id="convert-picks"></div>
+        <button class="btn" value="clear" data-action="clear">Clear pool, ignoring cards</button>
+        <label class="radio toggle"><input type="checkbox" id="wake" /> Keep screen awake</label>
+        <button class="btn danger" value="new-game" data-action="new-game">New game</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
