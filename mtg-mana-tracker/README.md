@@ -31,3 +31,7 @@ npm run preview # serve the production build, including the service worker
 ```
 
 The rules live in `src/rules.ts` and are covered by `src/rules.test.ts`. Saving and loading live in `src/storage.ts`, covered by `src/storage.test.ts`. The PWA icons in `public/` were rendered from the same SVG as `public/favicon.svg` using headless Chromium.
+
+## Deploying
+
+The app is deployed on Netlify from this folder of the `project-birthing-pod` repository. In the site's settings, set the base directory to `mtg-mana-tracker`. Everything else comes from `netlify.toml`. Netlify skips builds for commits that don't change this folder, and every pull request that does gets its own deploy preview link.
