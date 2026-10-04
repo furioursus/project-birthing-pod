@@ -11,7 +11,13 @@ An installable, offline-first progressive web app for tracking the mana you add 
 - **On the battlefield:** toggle the cards in play that change what happens to unspent mana. Mana a "keep" card protects stays. Everything else becomes the conversion color if a conversion card is out. If more than one conversion card is out, the app asks which replacement applies, as the rules let you choose.
 - **Add your own:** any other card that keeps or converts mana can be added from the card list.
 - **More (⋮):** convert the whole pool to one color, clear it while ignoring cards, keep the screen awake, or start a new game.
-- **Undo** reverses the last change. The game is saved on the device, so a reload or closed tab keeps your pool.
+- **Undo** reverses the last change, up to the last 100.
+
+### Saved on your device
+
+Everything is saved on the device after every change: the pool, the step and turn, the cards on the battlefield, your custom cards, the undo history, and your settings. Refreshing, closing the tab, or restarting the phone picks up exactly where you left off. Nothing is sent anywhere.
+
+The app asks the browser to keep this data instead of clearing it to free space. Installing the app to your home screen is the most reliable way to keep it, because Safari can clear data for sites that haven't been visited in a while unless they're installed. On iPhone, the installed app and Safari keep separate data, so a game started in one won't show up in the other.
 
 Built-in cards: Kruphix, God of Horizons; Horizon Stone; Omnath, Locus of All; Ozai, the Phoenix King; Omnath, Locus of Mana; Leyline Tyrant; Upwelling.
 
@@ -24,4 +30,4 @@ npm run check   # typecheck, tests, production build
 npm run preview # serve the production build, including the service worker
 ```
 
-The rules live in `src/rules.ts` and are covered by `src/rules.test.ts`. The PWA icons in `public/` were rendered from the same SVG as `public/favicon.svg` using headless Chromium.
+The rules live in `src/rules.ts` and are covered by `src/rules.test.ts`. Saving and loading live in `src/storage.ts`, covered by `src/storage.test.ts`. The PWA icons in `public/` were rendered from the same SVG as `public/favicon.svg` using headless Chromium.

@@ -20,58 +20,43 @@ import {
   type Color,
   type Duration,
   type Effect,
-  type Pool,
   type Transition,
 } from './rules';
+import { HISTORY_LIMIT, STORAGE_KEY, newGame, parseSaved, serialize, type Game } from './storage';
 import './style.css';
 
 registerSW({ immediate: true });
 
-interface Game {
-  pool: Pool;
-  step: number;
-  turn: number;
-  active: string[];
-}
-
-interface Saved {
-  game: Game;
-  custom: Card[];
-  wake: boolean;
-}
-
-const STORAGE_KEY = 'mtg-mana-tracker:v1';
-const HISTORY_LIMIT = 100;
-
-function newGame(): Game {
-  return { pool: emptyPool(), step: 0, turn: 1, active: [] };
-}
-
-function load(): Saved {
-  const fallback: Saved = { game: newGame(), custom: [], wake: false };
+function load() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return fallback;
-    const saved = JSON.parse(raw) as Partial<Saved>;
-    return { ...fallback, ...saved, game: { ...fallback.game, ...saved.game } };
+    return parseSaved(localStorage.getItem(STORAGE_KEY));
   } catch {
-    return fallback;
+    return parseSaved(null);
   }
 }
 
 const saved = load();
 let game = saved.game;
+let history = saved.history;
 let custom = saved.custom;
+let addDuration = saved.addDuration;
 let wake = saved.wake;
-let addDuration: Duration = 'step';
-let history: Game[] = [];
 
 function persist() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ game, custom, wake } satisfies Saved));
+    localStorage.setItem(STORAGE_KEY, serialize({ game, history, custom, addDuration, wake }));
   } catch {
     // Storage can be unavailable in private windows; the app still works for this session.
   }
+}
+
+// Ask the browser not to clear this site's storage when space runs low or the
+// site goes unvisited. Installed apps usually get this without a prompt.
+let askedToPersist = false;
+function requestPersistentStorage() {
+  if (askedToPersist) return;
+  askedToPersist = true;
+  void navigator.storage?.persist?.().catch(() => false);
 }
 
 function commit(next: Game) {
@@ -80,6 +65,7 @@ function commit(next: Game) {
   game = next;
   persist();
   render();
+  requestPersistentStorage();
 }
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -381,6 +367,7 @@ document.addEventListener('click', (event) => {
 
 $('duration').addEventListener('change', (event) => {
   addDuration = (event.target as HTMLInputElement).value as Duration;
+  persist();
   renderDuration();
 });
 
