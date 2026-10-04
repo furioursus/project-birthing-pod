@@ -1,0 +1,186 @@
+# Deploys every project folder that has a netlify.toml to its own Netlify site,
+# named after the folder, in the team below. Pull requests get a preview at
+# https://pr-<number>--<folder>.netlify.app and a comment with the link;
+# pushes to main deploy to production. The site is created on first deploy.
+#
+# One-time setup: add a Netlify personal access token as the repository
+# secret NETLIFY_AUTH_TOKEN. Without it, projects are still installed and
+# tested, and the deploy is skipped with a warning.
+
+name: Netlify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NETLIFY_TEAM: furioursus
+  NETLIFY_CLI_VERSION: '27'
+  NETLIFY_TELEMETRY_DISABLED: '1'
+
+jobs:
+  detect:
+    name: Find changed projects
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.detect.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - id: detect
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          all=()
+          for config in */netlify.toml; do
+            [ -e "$config" ] && all+=("$(dirname "$config")")
+          done
+
+          # A new branch, a manual run, or a change to this workflow deploys
+          # everything; otherwise only folders the change touched.
+          changed=""
+          case "$EVENT" in
+            pull_request) changed=$(git diff --name-only "$BASE_SHA...$HEAD_SHA") ;;
+            push) [[ "$BEFORE" =~ ^0+$ ]] || changed=$(git diff --name-only "$BEFORE" "$SHA") ;;
+          esac
+
+          projects=()
+          for project in "${all[@]}"; do
+            if [ -z "$changed" ] || grep -qx '.github/workflows/netlify.yml' <<<"$changed" || grep -q "^$project/" <<<"$changed"; then
+              projects+=("$project")
+            fi
+          done
+
+          json=$(printf '%s\n' "${projects[@]}" | jq -Rnc '[inputs | select(length > 0)]')
+          echo "Projects: $json"
+          echo "projects=$json" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: ${{ matrix.project }}
+    needs: detect
+    if: needs.detect.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(needs.detect.outputs.projects) }}
+    concurrency:
+      group: netlify-${{ matrix.project }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    env:
+      PROJECT: ${{ matrix.project }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Test
+        run: npm run test --if-present
+
+      - name: Check for Netlify token
+        id: token
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=Netlify deploy skipped::Add the NETLIFY_AUTH_TOKEN repository secret to deploy $PROJECT."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Netlify CLI
+        if: steps.token.outputs.present == 'true'
+        run: npm install --global "netlify-cli@$NETLIFY_CLI_VERSION"
+
+      - name: Find or create the site
+        id: site
+        if: steps.token.outputs.present == 'true'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          set -euo pipefail
+          site_id=$(netlify sites:list --json | jq -r --arg name "$PROJECT" '[.[] | select(.name == $name)][0].id // empty')
+          if [ -z "$site_id" ]; then
+            echo "Creating Netlify site $PROJECT in team $NETLIFY_TEAM"
+            # The API call fails if the name is taken, instead of picking a
+            # random name the way `netlify sites:create` would.
+            data=$(jq -nc --arg team "$NETLIFY_TEAM" --arg name "$PROJECT" '{account_slug: $team, body: {name: $name}}')
+            site_id=$(netlify api createSiteInTeam --data "$data" | jq -r '.id // empty')
+          fi
+          if [ -z "$site_id" ]; then
+            echo "::error::Could not find or create a Netlify site named $PROJECT."
+            exit 1
+          fi
+          echo "id=$site_id" >> "$GITHUB_OUTPUT"
+
+      - name: Build and deploy
+        id: deploy
+        if: steps.token.outputs.present == 'true'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          SITE_ID: ${{ steps.site.outputs.id }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          args=(--verbose deploy --site "$SITE_ID" --json)
+          if [ -n "$PR_NUMBER" ]; then
+            args+=(--context deploy-preview --alias "pr-$PR_NUMBER" --message "PR #$PR_NUMBER at ${SHA::7}")
+          else
+            args+=(--context production --prod --message "${GITHUB_REF_NAME} at ${SHA::7}")
+          fi
+          # --json keeps stdout to the result; --verbose sends the build log to stderr.
+          netlify "${args[@]}" > "$RUNNER_TEMP/deploy.json"
+          url=$(jq -r '.url // .deploy_url' "$RUNNER_TEMP/deploy.json")
+          logs=$(jq -r '.logs' "$RUNNER_TEMP/deploy.json")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "### $PROJECT deployed to $url" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Deploy log]($logs)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment the preview link
+        if: steps.deploy.outputs.url && github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const project = process.env.PROJECT;
+            const marker = `<!-- netlify-preview:${project} -->`;
+            const body = `${marker}\n**${project}** preview: ${process.env.URL}\n\nBuilt from ${process.env.SHA.slice(0, 7)}.`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

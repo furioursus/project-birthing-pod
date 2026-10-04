@@ -8,6 +8,9 @@ build/
 .output/
 .vite/
 
+# Netlify CLI local state
+.netlify/
+
 # Environment
 .env
 .env.*
