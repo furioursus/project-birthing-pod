@@ -2,6 +2,8 @@
 # named after the folder, in the team below. Pull requests get a preview at
 # https://pr-<number>--<folder>.netlify.app and a comment with the link;
 # pushes to main deploy to production. The site is created on first deploy.
+# Sites linked to this repository in the Netlify dashboard are left to
+# Netlify's own builds, so a change is never deployed twice.
 #
 # One-time setup: add a Netlify personal access token as the repository
 # secret NETLIFY_AUTH_TOKEN. Without it, projects are still installed and
@@ -127,7 +129,16 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
           set -euo pipefail
-          site_id=$(netlify sites:list --json | jq -r --arg name "$PROJECT" '[.[] | select(.name == $name)][0].id // empty')
+          site=$(netlify sites:list --json | jq -c --arg name "$PROJECT" '[.[] | select(.name == $name)][0] // {}')
+          site_id=$(jq -r '.id // empty' <<<"$site")
+          repo_url=$(jq -r '.build_settings.repo_url // empty' <<<"$site")
+          if [ -n "$repo_url" ]; then
+            # Netlify already builds sites linked to a repository; deploying
+            # here as well would publish every change twice.
+            echo "::notice title=Netlify builds $PROJECT::The site is linked to $repo_url, so Netlify deploys it. Skipping the deploy here."
+            echo "linked=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -z "$site_id" ]; then
             echo "Creating Netlify site $PROJECT in team $NETLIFY_TEAM"
             # The API call fails if the name is taken, instead of picking a
@@ -143,7 +154,7 @@ jobs:
 
       - name: Build and deploy
         id: deploy
-        if: steps.token.outputs.present == 'true'
+        if: steps.token.outputs.present == 'true' && steps.site.outputs.linked != 'true'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           SITE_ID: ${{ steps.site.outputs.id }}
