@@ -1,0 +1,15 @@
+# Netlify reads this file when the site's base directory is `mtg-mana-tracker`.
+# Builds are skipped automatically when a commit doesn't change this folder.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The service worker must never be served from a stale cache, or installed
+# copies of the app would stop picking up new versions.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
