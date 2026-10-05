@@ -34,4 +34,4 @@ The rules live in `src/rules.ts` and are covered by `src/rules.test.ts`. Saving 
 
 ## Deploying
 
-The app is deployed on Netlify from this folder of the `project-birthing-pod` repository. In the site's settings, set the base directory to `mtg-mana-tracker`. Everything else comes from `netlify.toml`. Netlify skips builds for commits that don't change this folder, and every pull request that does gets its own deploy preview link.
+The app is live at <https://mtg-mana-tracker.netlify.app>. The `mtg-mana-tracker` Netlify site is linked to the `project-birthing-pod` repository with its base directory set to this folder, and everything else comes from `netlify.toml`. Netlify skips builds for commits that don't change this folder. Every pull request that does change it gets its own deploy preview link, and merges to `main` go to production. Because the site is linked, the workspace's Netlify workflow only runs the tests and leaves deploying to Netlify.
