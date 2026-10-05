@@ -8,7 +8,7 @@ export const questions: Question[] = [
     prompt: 'A friend texts you “we need to talk.” What’s your move?',
     answers: [
       {
-        text: 'Read their mind. Well, read the room. Same thing.',
+        text: 'Figure out what’s wrong before they say it, and start fixing it before they ask.',
         weights: { 'emergency-body-swap': 3 },
       },
       {
@@ -20,7 +20,7 @@ export const questions: Question[] = [
         weights: { 'hand-bolas-the-doomsday-device': 3, 'the-hedron-math-worked': 1 },
       },
       {
-        text: 'Reply “omw,” then get distracted by an unrelated mystery for three days.',
+        text: 'Reply “omw,” then get sidetracked by something way more interesting.',
         weights: { 'solve-the-mystery-lose-to-the-answer': 3, 'accidentally-the-government': 1 },
       },
     ],
@@ -29,19 +29,19 @@ export const questions: Question[] = [
     prompt: 'Your romantic history is best described as:',
     answers: [
       {
-        text: 'They were clearly working for someone else. I found that intriguing.',
+        text: 'I’m drawn to people with secrets. I find out what the secrets are later.',
         weights: { 'dating-the-double-agent': 3, 'just-five-more-minutes': 1 },
       },
       {
-        text: 'They once threatened my friends to get what they wanted. Now we’re adorable.',
+        text: 'We got off to a rough start. A really rough start. Now we’re inseparable.',
         weights: { 'just-five-more-minutes': 2, 'hand-bolas-the-doomsday-device': 1 },
       },
       {
-        text: 'I’d do anything for them. Including rewriting reality. Normal stuff.',
+        text: 'I’d move heaven and earth for them, whether or not they asked me to.',
         weights: { 'fix-everything-personally': 3, 'become-the-final-boss': 1 },
       },
       {
-        text: 'What romantic history? I’ve forgotten most of my life.',
+        text: 'Honestly? A lot of it is a blur.',
         weights: { 'out-think-the-sphinx': 3, 'i-expected-as-much': 1 },
       },
     ],
@@ -50,15 +50,15 @@ export const questions: Question[] = [
     prompt: 'Group project. Which role do you end up in?',
     answers: [
       {
-        text: 'I make the plan. I explain the plan. Nobody follows the plan, including me.',
+        text: 'I point out everything wrong with the plan, get outvoted, and help anyway.',
         weights: { 'i-expected-as-much': 3, 'solve-the-mystery-lose-to-the-answer': 1 },
       },
       {
-        text: 'I accidentally become project lead, then move to another country.',
+        text: 'I end up in charge by accident, then quietly hand it off and vanish.',
         weights: { 'accidentally-the-government': 3 },
       },
       {
-        text: 'I run the group chat and make sure everyone knows their part.',
+        text: 'I keep everyone talking and make sure each person knows their part.',
         weights: { 'the-telepathic-switchboard': 3, 'the-hedron-math-worked': 1 },
       },
       {
@@ -68,43 +68,43 @@ export const questions: Question[] = [
     ],
   },
   {
-    prompt: 'Pick a getaway.',
+    prompt: 'Your ideal weekend?',
     answers: [
       {
-        text: 'A deserted island. I’ll figure out who I am when I get there.',
+        text: 'Somewhere remote with no signal, where nobody knows who I am.',
         weights: { 'hand-bolas-the-doomsday-device': 3 },
       },
       {
-        text: 'A gothic village with a creepy unsolved mystery.',
+        text: 'Deep in a rabbit hole I fell into at 2 a.m. on Friday.',
         weights: { 'solve-the-mystery-lose-to-the-answer': 3 },
       },
       {
-        text: 'A desert heist with a shady guy I hired yesterday.',
+        text: 'Something slightly illegal with people I met yesterday.',
         weights: { 'rob-the-vault-lose-the-kid': 3 },
       },
       {
-        text: 'Wherever my ex is. Just to talk. One more time.',
+        text: 'Revisiting a place that reminds me of someone.',
         weights: { 'just-five-more-minutes': 3 },
       },
     ],
   },
   {
-    prompt: 'Someone hands you an artifact of unimaginable power. You:',
+    prompt: 'Someone hands you something far too powerful to be safe. You:',
     answers: [
       {
-        text: 'Use it immediately to fix everything wrong with the world.',
+        text: 'Use it right away to fix everything. Somebody has to.',
         weights: { 'fix-everything-personally': 3, 'become-the-final-boss': 1 },
       },
       {
-        text: 'Give it to the villain. On purpose. I have a plan.',
+        text: 'Hand it to the last person who should have it. It’s part of a long game.',
         weights: { 'hand-bolas-the-doomsday-device': 3 },
       },
       {
-        text: 'Study it with a nerdy old dragon and do the math first.',
+        text: 'Read the manual twice and check the math with someone who knows more than me.',
         weights: { 'the-hedron-math-worked': 3, 'follow-chandra-into-the-eye': 1 },
       },
       {
-        text: 'Poke it while arguing with two other people. What’s the worst that could happen?',
+        text: 'Mess with it in the middle of an argument. It’s probably fine.',
         weights: { 'follow-chandra-into-the-eye': 3 },
       },
     ],
@@ -117,7 +117,7 @@ export const questions: Question[] = [
         weights: { 'accidentally-the-government': 3, 'rob-the-vault-lose-the-kid': 1 },
       },
       {
-        text: 'Take on my friends’ problems, even if it costs me my sense of self.',
+        text: 'Take on everyone else’s problems until I can’t tell where theirs end and mine begin.',
         weights: { 'emergency-body-swap': 3, 'accidentally-the-government': 1 },
       },
       {
@@ -125,7 +125,7 @@ export const questions: Question[] = [
         weights: { 'just-five-more-minutes': 3 },
       },
       {
-        text: 'Design a new world where it isn’t my problem.',
+        text: 'Reorganize the whole system around how I think things should work.',
         weights: { 'become-the-final-boss': 3 },
       },
     ],
@@ -155,19 +155,19 @@ export const questions: Question[] = [
     prompt: 'Pick a sidekick.',
     answers: [
       {
-        text: 'A pyromancer with no impulse control.',
+        text: 'Someone who acts first and asks questions never.',
         weights: { 'follow-chandra-into-the-eye': 3, 'the-hedron-math-worked': 1 },
       },
       {
-        text: 'A tiny guy who can see doorways to other worlds.',
+        text: 'A tiny chaotic gremlin I would die for.',
         weights: { 'rob-the-vault-lose-the-kid': 3 },
       },
       {
-        text: 'A gorgon who has, admittedly, threatened me before.',
+        text: 'Someone with a scary past who I’m sure has changed.',
         weights: { 'just-five-more-minutes': 2, 'rob-the-vault-lose-the-kid': 1 },
       },
       {
-        text: 'Everyone I’ve ever met, linked telepathically.',
+        text: 'Everyone. All of them. On the same page, at the same time.',
         weights: { 'the-telepathic-switchboard': 2, 'accidentally-the-government': 2 },
       },
     ],
@@ -176,19 +176,19 @@ export const questions: Question[] = [
     prompt: 'It’s 3 a.m. and you can’t sleep. What are you doing?',
     answers: [
       {
-        text: 'Reading someone else’s journal and pinning red string to a corkboard.',
+        text: 'Connecting dots nobody asked me to connect.',
         weights: { 'solve-the-mystery-lose-to-the-answer': 3 },
       },
       {
-        text: 'Building a better version of reality in my head, room by room.',
+        text: 'Mentally redesigning how the world should work, in great detail.',
         weights: { 'become-the-final-boss': 3 },
       },
       {
-        text: 'Replaying that one fight with my old mentor.',
+        text: 'Replaying an argument with an old teacher that I’m still sure I won.',
         weights: { 'out-think-the-sphinx': 3 },
       },
       {
-        text: 'Plotting how to undo the worst thing that ever happened to someone I love.',
+        text: 'Wishing I could go back and make one bad thing never have happened.',
         weights: { 'fix-everything-personally': 3, 'dating-the-double-agent': 1 },
       },
     ],
