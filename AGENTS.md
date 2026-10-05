@@ -16,6 +16,15 @@ This repository is a shared workspace for early-stage projects. Each project liv
 - Use npm for every project. Before working in a folder, run `npm ci` there, or `npm install` if it has no `package-lock.json` yet, and commit the lockfile. Do not use pnpm, Yarn, or Bun, even though the environment has them installed.
 - Every project folder has its own `README.md` describing what it is, and may have its own `AGENTS.md` for project-specific instructions.
 
+## Deploying to Netlify
+
+- Any project folder with a `netlify.toml` deploys automatically through `.github/workflows/netlify.yml`. The Netlify site has the same name as the folder and lives in the `furioursus` team. The workflow creates it on the first deploy.
+- A pull request that touches a project gets a preview at `https://pr-<number>--<folder>.netlify.app`, and the workflow comments the link on the pull request. A merge to `main` deploys that project to production.
+- To deploy a web project, add a `netlify.toml` to its folder with the build command and publish directory, and run its build once locally to confirm the output folder. Projects that shouldn't deploy just leave the file out.
+- You don't need to link these sites to the repository in the Netlify dashboard. If one is linked, Netlify builds it with its own previews and comments, and the workflow skips deploying it, so a change is never deployed twice. `mtg-mana-tracker` is linked this way.
+- The workflow needs the `NETLIFY_AUTH_TOKEN` repository secret. Without it, projects are still installed and tested, and the deploy step is skipped with a warning.
+- When a project moves to its own repository, keep its Netlify site and its URL, and set up deploys from the new repository.
+
 ## Starting a new project
 
 1. Create the top-level folder.
