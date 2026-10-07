@@ -16,6 +16,13 @@ This repository is a shared workspace for early-stage projects. Each project liv
 - Use npm for every project. Before working in a folder, run `npm ci` there, or `npm install` if it has no `package-lock.json` yet, and commit the lockfile. Do not use pnpm, Yarn, or Bun, even though the environment has them installed.
 - Every project folder has its own `README.md` describing what it is, and may have its own `AGENTS.md` for project-specific instructions.
 
+## Shared skills
+
+- `.claude/skills/impeccable/` is [Impeccable](https://impeccable.style) (Apache 2.0), copied from its `skill-v4.5.0` release. Use it for design work in any project: `/impeccable critique`, `audit`, `polish` and the rest.
+- Run it from inside the project folder, so the `PRODUCT.md`, `DESIGN.md` and `.impeccable/` files it writes land in that project and move with it when it's extracted.
+- Its design-check hooks are not committed. `npx impeccable install` writes them to `.claude/settings.local.json`, which is gitignored, so each machine opts in on its own.
+- To update, run `npx impeccable update` from the repository root and commit the result on its own with the `workspace` scope.
+
 ## Deploying to Netlify
 
 - Any project folder with a `netlify.toml` deploys automatically through `.github/workflows/netlify.yml`. The Netlify site has the same name as the folder and lives in the `furioursus` team. The workflow creates it on the first deploy.
