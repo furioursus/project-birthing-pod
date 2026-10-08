@@ -11,6 +11,9 @@ colors:
   pencil: "#9de2ff"
   redline: "#ff8b7b"
   gold: "#ffd56e"
+  grid-major: "rgb(255 255 255 / 0.085)"
+  grid-minor: "rgb(255 255 255 / 0.04)"
+  vignette: "rgb(4 22 54 / 0.5)"
 typography:
   display:
     fontFamily: "'Big Shoulders Variable', 'Arial Narrow', sans-serif"
@@ -43,6 +46,22 @@ typography:
   body:
     fontFamily: "'Atkinson Hyperlegible Next Variable', system-ui, sans-serif"
     fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.6
+  zone:
+    fontFamily: "'Big Shoulders Variable', 'Arial Narrow', sans-serif"
+    fontSize: "0.625rem"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "0.05em"
+  small:
+    fontFamily: "'Atkinson Hyperlegible Next Variable', system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.55
+  lede:
+    fontFamily: "'Atkinson Hyperlegible Next Variable', system-ui, sans-serif"
+    fontSize: "1.2rem"
     fontWeight: 400
     lineHeight: 1.6
   label:
@@ -243,16 +262,21 @@ Every text token clears WCAG AA (4.5:1) on the plain sheet, and Dim Line clears 
 **Character:** Big Shoulders is the draftsman's lettering: condensed, upright capitals that letter the titles, field labels, buttons, sheet numbers and stamps. Atkinson Hyperlegible Next carries every sentence of canon and every reading, because people arriving from a shared link have to read it cold. Architects Daughter is Jace's own hand, and it only ever speaks for him.
 
 ### Hierarchy
+The ramp has thirteen steps, each a CSS custom property (`--fs-*`) in `src/style.css`. Every font size in the stylesheet uses one of them. The only exceptions are the struck correction (0.42em, relative to the headline) and the revision triangle's numeral (SVG user units). A role may reuse another step's size in its own face.
+
 - **Display** (800, clamp(2.9rem, 8.4vw, 6rem), 0.92, uppercase): the landing headline in the entrance hall, carrying the struck word and its pencilled correction.
-- **Headline** (800, clamp(2.7rem, 8vw, 5.5rem), 0.92, uppercase): result titles and the illusion's fake title. Page titles (the sheet index and the missing page) use the same style at clamp(2.6rem, 7vw, 4.5rem).
-- **Title** (700, clamp(2.1rem, 5.6vw, 3.4rem), 1, sentence case, max 24ch): the question prompt. It is the one large display setting that stays in sentence case, because it is a question you read, not a lettered label.
-- **Section** (700, 1.6rem, 1.1, 0.02em, uppercase): result-body section headings (What happened, What this says about you, Evidence). The who's-who summary and terms sit near it at 1.05rem.
-- **Room** (700, 1.35rem, 1.05, balanced wrap): plan names in floor-plan rooms. In the sheet index the plan link uses 1.3rem, or 1.15rem under 40rem.
-- **Body** (400, 1.0625rem, 1.6, pretty wrap): all reading text. Measures are capped at 65ch in result sections, 60ch for ledes (46ch in the hall) and 62ch for general notes. Ledes step up to 1.15rem in Soft Ink. Answers use 1.08rem at 1.4, and the footer uses 0.82rem at 1.55.
-- **Label** (700, 0.78rem, 1.2, 0.14em, uppercase, Soft Ink): title-block field labels, drawing-info terms, room numbers, survey sheet numbers, table column heads and the intent box label. Zone markers are the smallest lettering at 600 weight, 10px and 0.05em.
-- **Button** (700, 1.05rem, 1.1, 0.07em, uppercase): every bordered button. The door button steps up to 800 at 1.3rem (1.2rem below 40rem) and never wraps.
-- **Stamp** (800, 1.7rem, 1, 0.08em, uppercase): the status stamp, reduced to 1.2rem below 60rem.
-- **Hand** (400, about 1.05rem, never uppercase): pencil notes. Sizes run from 0.95rem (key hint, stamp gloss) to 1.3rem (illusion notes). The plan in the intent box uses clamp(1.25rem, 3.2vw, 1.5rem) at 1.4, and "Reading you…" uses clamp(2.2rem, 6vw, 3.5rem) at 1.1.
+- **Headline** (800, clamp(2.7rem, 8vw, 5.5rem), 0.92, uppercase): result titles, the illusion's fake title, and the page titles of the sheet index and the missing page.
+- **Title** (700, clamp(2.1rem, 5.6vw, 3.4rem), 1, sentence case, max 24ch): the question prompt, and "Reading you…" in the pencil hand.
+- **Stamp** (800, 1.7rem, 1, 0.08em, uppercase): the status stamp, at the Lede size below 60rem.
+- **Section** (700, 1.6rem, 1.1, 0.02em, uppercase): result-body section headings and the scale-bar value.
+- **Room** (700, 1.35rem, 1.05, balanced wrap): plan names in rooms and in the sheet index, plus the door button at 800. The illusion's pencil notes use this size in the hand.
+- **Hand plan** (400, clamp(1.25rem, 3.2vw, 1.5rem), 1.4): the plan as Jace wrote it, in the intent box.
+- **Lede** (400, 1.2rem, 1.6, Soft Ink): ledes. Below 40rem, sheet-index plan names, the door button and the stamp step down to this size.
+- **Body** (400, 1.0625rem, 1.6, pretty wrap): all reading text, answers included. Measures are capped at 65ch in result sections, 60ch for ledes (46ch in the hall) and 62ch for general notes.
+- **UI** (1.05rem): buttons (700, 0.07em, uppercase), the who's-who summary and terms, result meta, index sheet numbers and years, and pencil notes in the hand.
+- **Small** (400, 0.875rem, 1.55): the footer, room meta, title-block meta, evidence chips, the index status and meta line, the survey sheet number, the key hint and the stamp gloss.
+- **Label** (700, 0.78rem, 1.2, 0.14em, uppercase, Soft Ink): title-block field labels, drawing-info terms, room numbers, table column heads, the intent box label, general-notes heading, title-block meta terms and scale ticks.
+- **Zone** (600, 0.625rem, 0.05em): zone markers only, the smallest lettering on the sheet.
 
 Numerals in the sheet index are tabular. Headings use `text-wrap: balance` and paragraphs use `text-wrap: pretty`.
 

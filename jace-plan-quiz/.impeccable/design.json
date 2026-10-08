@@ -153,6 +153,24 @@
           "oklch(95% 0.02 257.5)"
         ],
         "contrastOnSheet": 3.3
+      },
+      "grid-major": {
+        "role": "pattern",
+        "displayName": "Grid Major",
+        "canonical": "rgb(255 255 255 / 0.085)",
+        "purpose": "Major grid lines every 120px on the sheet ground."
+      },
+      "grid-minor": {
+        "role": "pattern",
+        "displayName": "Grid Minor",
+        "canonical": "rgb(255 255 255 / 0.04)",
+        "purpose": "Minor grid lines every 24px on the sheet ground."
+      },
+      "vignette": {
+        "role": "pattern",
+        "displayName": "Vignette",
+        "canonical": "rgb(4 22 54 / 0.5)",
+        "purpose": "Radial darkening at the sheet's edges."
       }
     },
     "typographyMeta": {
@@ -199,6 +217,18 @@
       "hand-plan": {
         "displayName": "Hand (plan)",
         "purpose": "The plan in the result's intent box, in Jace's pencil."
+      },
+      "zone": {
+        "displayName": "Zone",
+        "purpose": "Zone markers in the drawing frame only."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Footer, room and title-block meta, evidence chips, index status, key hint, stamp gloss."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Ledes; the compact size for the door button, stamp and index plan names below 40rem."
       }
     },
     "shadows": [],
