@@ -11,7 +11,7 @@
   --pencil: #9de2ff;
   --redline: #ff8b7b;
   --gold: #ffd56e;
-  --hatch: repeating-linear-gradient(-45deg, rgb(230 239 252 / 0.2) 0 1.5px, transparent 1.5px 9px);
+  --hatch: repeating-linear-gradient(-45deg, rgb(230 239 252 / 0.13) 0 1.5px, transparent 1.5px 9px);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
   --text: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
@@ -191,19 +191,6 @@ ins {
     min-height: calc(100dvh - 12px);
   }
 
-  main {
-    padding-inline: 0.875rem;
-  }
-
-  .sheet-head,
-  .sheet-foot {
-    padding-inline: 0.875rem;
-  }
-
-  .btn-door {
-    padding-inline: 1.4rem;
-    font-size: 1.2rem;
-  }
 
   .zones span {
     font-size: 0;
@@ -381,8 +368,9 @@ main {
 
   .btn-primary:hover,
   .btn-door:hover {
-    background-color: #fff;
-    box-shadow: 0 8px 22px rgb(3 16 40 / 0.45);
+    background-color: var(--line);
+    outline: 1.5px solid var(--line);
+    outline-offset: 3px;
   }
 
   .btn-quiet:hover,
@@ -865,7 +853,6 @@ main {
 .title-note {
   margin: 0 0 0.75rem;
   color: var(--ink-soft);
-  font-style: italic;
 }
 
 .rev-note {
@@ -1117,7 +1104,9 @@ main {
 }
 
 .cards a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: 0.4rem 0.75rem;
   border: 1px solid var(--line-dim);
   border-radius: 2px;
@@ -1161,12 +1150,11 @@ main {
 /* The illusion: Jace shows the wrong plan, then redlines it. */
 
 .illusion {
-  padding-inline: clamp(1.5rem, 4vw, 2.5rem);
   display: grid;
   align-content: center;
   justify-items: start;
   min-height: 60vh;
-  padding: 1rem 0;
+  padding: 1rem clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .illusion-stage {
@@ -1348,9 +1336,7 @@ main {
   font-size: 0.85rem;
 }
 
-.index .yours {
-  background-image: var(--hatch);
-}
+
 
 .yours-note {
   white-space: nowrap;
@@ -1388,6 +1374,23 @@ main {
     flex: 1 1 100%;
   }
 
+}
+
+/* Small-screen gutters. Last, so they win over the base rules above. */
+@media (max-width: 40rem) {
+  main {
+    padding-inline: 0.875rem;
+  }
+
+  .sheet-head,
+  .sheet-foot {
+    padding-inline: 0.875rem;
+  }
+
+  .btn-door {
+    padding-inline: 1.4rem;
+    font-size: 1.2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
