@@ -1,6 +1,7 @@
 import '@fontsource-variable/big-shoulders/opsz.css';
 import '@fontsource-variable/atkinson-hyperlegible-next';
 import '@fontsource/architects-daughter';
+import '@fontsource/fragment-mono';
 import './style.css';
 import { questions } from './data/questions';
 import { glossaryFor } from './data/glossary';
@@ -109,6 +110,27 @@ function lastResult(): string | null {
   }
 }
 
+// Plans you've opened stay unsealed on the landing's legend, on this device.
+const SEEN_KEY = 'jace-plan-quiz:seen';
+
+function seenPlans(): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) ?? '[]') as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+function markSeen(id: string) {
+  try {
+    const seen = seenPlans();
+    seen.add(id);
+    localStorage.setItem(SEEN_KEY, JSON.stringify([...seen]));
+  } catch {
+    // Storage can be blocked; the legend just stays sealed.
+  }
+}
+
 // Routing. Quiz progress lives in history state, so refresh keeps your place
 // and Back steps to the previous question.
 
@@ -175,22 +197,121 @@ function resumeQuiz(saved: QuizState | undefined, step: number) {
 
 const DOOR_ARC = `<svg viewBox="0 0 48 48"><path d="M2 2 V46" /><path d="M2 46 A44 44 0 0 0 46 2" stroke-dasharray="3 4" /></svg>`;
 
+const two = (n: number) => String(n).padStart(2, '0');
+
+/**
+ * The mind palace, drawn as a radial plan: a central chamber, a ring corridor,
+ * and one round chamber per plan, sized by its rating. Numbers only; the
+ * legend says which plan is which. Decorative for assistive tech, which gets
+ * the same links through the legend.
+ */
+function palacePlan(yours: string | null): SVGSVGElement {
+  const C = 320;
+  const ring = 150;
+  const orbit = 232;
+  const radii = inPublicationOrder.map((r) => 17 + r.planRating * 3.2);
+  // Chambers run clockwise from the lower left, over the top, to the lower
+  // right, leaving the bottom of the ring for the entrance.
+  const span = (290 * Math.PI) / 180;
+  const start = (215 * Math.PI) / 180;
+  const gap = (span * orbit - radii.reduce((sum, r) => sum + r * 2, 0)) / (radii.length - 1);
+  const at = (angle: number, distance: number) => [C + distance * Math.sin(angle), C - distance * Math.cos(angle)];
+  const f = (n: number) => n.toFixed(1);
+
+  let walked = 0;
+  const chambers = inPublicationOrder.map((r, i) => {
+    const radius = radii[i]!;
+    const angle = start + (walked + radius) / orbit;
+    walked += radius * 2 + gap;
+    const [cx, cy] = at(angle, orbit);
+    // The doorway faces the corridor: a gap in the wall pointing at the centre.
+    const inward = Math.atan2(C - cy!, C - cx!);
+    const half = Math.min(0.42, 11 / radius);
+    const p1 = [cx! + radius * Math.cos(inward + half), cy! + radius * Math.sin(inward + half)];
+    const p2 = [cx! + radius * Math.cos(inward - half), cy! + radius * Math.sin(inward - half)];
+    const wall = `M${f(p1[0]!)} ${f(p1[1]!)} A${f(radius)} ${f(radius)} 0 1 1 ${f(p2[0]!)} ${f(p2[1]!)}`;
+    // A short passage from the doorway to the ring corridor.
+    const side = 6;
+    const [ax, ay] = [Math.cos(inward), Math.sin(inward)];
+    const [nx, ny] = [-ay, ax];
+    const from = orbit - radius;
+    const passage = [-1, 1]
+      .map((k) => {
+        const [x1, y1] = at(angle, from).map((v, j) => v + k * side * (j ? ny : nx));
+        const [x2, y2] = at(angle, ring + 2).map((v, j) => v + k * side * (j ? ny : nx));
+        return `<path d="M${f(x1!)} ${f(y1!)} L${f(x2!)} ${f(y2!)}" class="pp-thin" />`;
+      })
+      .join('');
+    const size = Math.max(15, Math.min(21, radius * 0.6));
+    return `<a href="/plan/${r.id}" tabindex="-1" class="pp-chamber${r.id === yours ? ' is-yours' : ''}" data-n="${i + 1}">
+      ${passage}
+      <circle cx="${f(cx!)}" cy="${f(cy!)}" r="${f(radius - 6)}" class="pp-floor" />
+      <path d="${wall}" class="pp-wall" />
+      <circle cx="${f(cx!)}" cy="${f(cy!)}" r="${f(radius - 6)}" class="pp-thin" />
+      <text x="${f(cx!)}" y="${f(cy! + size * 0.35)}" font-size="${f(size)}">[${two(i + 1)}]</text>
+    </a>`;
+  });
+
+  // The ring corridor, open at the bottom where the entrance comes in.
+  const corridor = (r: number, cls: string) => {
+    const [x1, y1] = at((196 * Math.PI) / 180, r);
+    const [x2, y2] = at((164 * Math.PI) / 180, r);
+    return `<path d="M${f(x1!)} ${f(y1!)} A${r} ${r} 0 1 1 ${f(x2!)} ${f(y2!)}" class="${cls}" />`;
+  };
+
+  return svg(`<svg class="palace-plan" viewBox="0 30 ${C * 2} ${C * 2 - 60}">
+    <defs><pattern id="pp-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><path d="M0 0V9" class="pp-thin" /></pattern></defs>
+    ${corridor(ring, 'pp-wall')}
+    ${corridor(ring - 12, 'pp-thin')}
+    <circle cx="${C}" cy="${C}" r="96" class="pp-wall" />
+    <circle cx="${C}" cy="${C}" r="84" class="pp-thin" />
+    <path d="M${C} ${C - 44} L${C + 30} ${C - 18} L${C} ${C + 40} L${C - 30} ${C - 18} Z" class="pp-sigil" />
+    <circle cx="${C}" cy="${C - 12}" r="7" class="pp-sigil-eye" />
+    <text x="${C}" y="${C + 70}" font-size="17">[00]</text>
+    <path d="M${C - 9} ${C + 96} L${C - 9} ${C + ring - 12} M${C + 9} ${C + 96} L${C + 9} ${C + ring - 12}" class="pp-thin" />
+    <path d="M${C - 9} ${C + ring + 2} L${C - 9} ${C + 196} M${C + 9} ${C + ring + 2} L${C + 9} ${C + 196}" class="pp-thin" />
+    <path d="M${C - 40} ${C + 230} A40 40 0 1 1 ${C + 40} ${C + 230}" class="pp-wall" />
+    <circle cx="${C - 40}" cy="${C + 230}" r="4.5" class="pp-dot" />
+    <circle cx="${C + 40}" cy="${C + 230}" r="4.5" class="pp-dot" />
+    <text x="${C}" y="${C + 236}" font-size="15">[entry]</text>
+    ${chambers.join('')}
+  </svg>`);
+}
+
 function renderIntro() {
   const yours = lastResult();
-  const rooms = inPublicationOrder.map((r, i) =>
-    h(
-      'a',
-      // Rooms past the first six fill the bottom two rows of the plan; some are double-width.
-      {
-        class: `room ${r.outcome}${[6, 9, 11, 12].includes(i) ? ' wide' : ''}${r.id === yours ? ' yours' : ''}`,
-        href: `/plan/${r.id}`,
-      },
-      h('span', { class: 'room-no' }, sheetOf(r)),
-      h('span', { class: 'room-title' }, r.title),
-      r.id === yours && h('span', { class: 'pencil yours-note' }, 'Yours.'),
-      h('span', { class: 'room-meta' }, `${r.year} · `, h('span', { class: 'room-status' }, outcomeLabel(r))),
-    ),
+  const seen = seenPlans();
+  if (yours) seen.add(yours);
+  const unsealed = inPublicationOrder.filter((r) => seen.has(r.id)).length;
+
+  const legend = h(
+    'ol',
+    { class: 'legend' },
+    ...inPublicationOrder.map((r, i) => {
+      const open = seen.has(r.id);
+      return h(
+        'li',
+        { 'data-n': String(i + 1) },
+        h(
+          'a',
+          { href: `/plan/${r.id}` },
+          h('span', { class: 'legend-n' }, `[${two(i + 1)}]`),
+          h('span', { class: 'legend-leader', 'aria-hidden': 'true' }),
+          open
+            ? h('span', { class: 'legend-title' }, r.title)
+            : h(
+                'span',
+                { class: 'legend-title' },
+                h('span', { class: 'redacted', style: `width: ${Math.min(r.title.length, 24)}ch`, 'aria-hidden': 'true' }),
+                h('span', { class: 'sr-only' }, 'Sealed plan'),
+              ),
+        ),
+        r.id === yours && h('span', { class: 'pencil legend-yours', 'aria-hidden': 'true' }, '← yours'),
+      );
+    }),
   );
+
+  const plan = palacePlan(yours);
 
   show(
     null,
@@ -199,48 +320,61 @@ function renderIntro() {
       { class: 'landing' },
       h(
         'div',
-        { class: 'floorplan' },
+        { class: 'entry' },
+        // Jace's own portrait, as the pencil underdrawing the plan was drafted over.
+        h('img', {
+          class: 'underdrawing',
+          src: '/art/jace-architect-of-thought.svg',
+          alt: '',
+          width: '1080',
+          height: '1397',
+          decoding: 'async',
+        }),
+        h(
+          'h1',
+          {
+            class: 'headline',
+            tabindex: '-1',
+            'aria-label': 'Which poorly thought-out Jace Beleren plan are you?',
+          },
+          'Which ',
+          h('del', { class: 'struck' }, 'brilliant'),
+          ' ',
+          h('ins', { class: 'correction' }, 'poorly thought-out'),
+          ' Jace Beleren plan are you?',
+        ),
+        h('p', { class: 'lede' }, 'Ten questions. Jace reads your mind. He gets it wrong first.'),
         h(
           'div',
-          { class: 'hall' },
-          // Jace's own portrait, as the pencil underdrawing the plan was drafted over.
-          h('img', {
-            class: 'underdrawing',
-            src: '/art/jace-architect-of-thought.svg',
-            alt: '',
-            width: '1080',
-            height: '1397',
-            decoding: 'async',
-          }),
-          h(
-            'h1',
-            {
-              class: 'headline',
-              tabindex: '-1',
-              'aria-label': 'Which poorly thought-out Jace Beleren plan are you?',
-            },
-            'Which ',
-            h('del', { class: 'struck' }, 'brilliant'),
-            ' ',
-            h('ins', { class: 'correction' }, 'poorly thought-out'),
-            ' Jace Beleren plan are you?',
-          ),
-          h('p', { class: 'lede' }, 'Ten questions. Jace reads your mind. He gets it wrong first.'),
-          h(
-            'div',
-            { class: 'door' },
-            h('button', { class: 'btn btn-door', type: 'button', onclick: startQuiz }, 'Formulate a plan'),
-            svg(DOOR_ARC),
-          ),
-          h(
-            'p',
-            { class: 'art-credit' },
-            'Underdrawing after ',
-            h('cite', {}, 'Jace, Architect of Thought'),
-            '. Art by Jaime Jones, © 2024 Wizards of the Coast LLC.',
-          ),
+          { class: 'door' },
+          h('button', { class: 'btn btn-door', type: 'button', onclick: startQuiz }, 'Formulate a plan'),
+          svg(DOOR_ARC),
         ),
-        ...rooms,
+        h(
+          'p',
+          { class: 'art-credit' },
+          'Underdrawing after ',
+          h('cite', {}, 'Jace, Architect of Thought'),
+          '. Art by Jaime Jones, © 2024 Wizards of the Coast LLC.',
+        ),
+      ),
+      h(
+        'figure',
+        { class: 'palace' },
+        h(
+          'div',
+          { class: 'coords', 'aria-hidden': 'true' },
+          h('span', {}, '[mind........(total)]\n[14 plans..........]'),
+          h('span', {}, `[unsealed.....(you)]\n[${two(unsealed)} of 14..........]`),
+        ),
+        plan,
+        h('figcaption', { class: 'pencil palace-note' }, 'Most rooms are sealed. Jace says it’s for your protection.'),
+      ),
+      h(
+        'section',
+        { class: 'legend-wrap', 'aria-labelledby': 'legend-title' },
+        h('h2', { id: 'legend-title' }, 'Floor plan'),
+        legend,
       ),
       h(
         'div',
@@ -251,10 +385,22 @@ function renderIntro() {
           {},
           `Jace Beleren is the most powerful telepath in the Multiverse, a master strategist, and a man who has lost his memory more than once. Answer ${questions.length} questions and find out which of his ${beefCount} documented blunders lives in your heart. Or, if you're very lucky, one of the times it actually worked.`,
         ),
-        h('p', { class: 'pencil plan-note', 'aria-hidden': 'true' }, 'Every room is one of his plans. Go on in.'),
       ),
     ),
   );
+
+  // Pointing at a chamber lights its legend line, and the other way round.
+  const light = (n: string | undefined, on: boolean) => {
+    if (!n) return;
+    app.querySelectorAll(`[data-n="${n}"]`).forEach((el) => el.classList.toggle('is-lit', on));
+  };
+  app.querySelectorAll<HTMLElement | SVGElement>('[data-n]').forEach((el) => {
+    const n = el.getAttribute('data-n') ?? undefined;
+    el.addEventListener('pointerenter', () => light(n, true));
+    el.addEventListener('pointerleave', () => light(n, false));
+    el.addEventListener('focusin', () => light(n, true));
+    el.addEventListener('focusout', () => light(n, false));
+  });
 }
 
 // Questions: a survey of your mind, one sheet per question.
@@ -488,6 +634,7 @@ async function share(result: Result, button: HTMLButtonElement) {
 }
 
 function renderSheet(result: Result, mine: boolean, revisedFrom: Result | undefined) {
+  markSeen(result.id);
   const shareButton = h(
     'button',
     { class: mine ? 'btn btn-primary' : 'btn', type: 'button' },
@@ -651,8 +798,11 @@ if (legacy) history.replaceState(null, '', `/${legacy[1]}`);
 document.addEventListener('click', (event) => {
   const link = (event.target as Element).closest('a');
   if (!link || event.defaultPrevented || event.button !== 0) return;
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target) return;
-  const url = new URL(link.href, location.href);
+  // SVG links (the palace chambers) expose href and target as objects, so read the attributes.
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.getAttribute('target')) return;
+  const href = link.getAttribute('href');
+  if (!href) return;
+  const url = new URL(href, location.href);
   if (url.origin !== location.origin) return;
   event.preventDefault();
   if (url.pathname !== location.pathname) go(url.pathname);

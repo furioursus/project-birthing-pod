@@ -192,7 +192,7 @@
       },
       "room": {
         "displayName": "Room",
-        "purpose": "Plan names inside floor-plan rooms."
+        "purpose": "Plan names in the sheet index; the door button."
       },
       "body": {
         "displayName": "Body",
@@ -229,6 +229,10 @@
       "lede": {
         "displayName": "Lede",
         "purpose": "Ledes; the compact size for the door button, stamp and index plan names below 40rem."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Fragment Mono for the record only: legend lines, bracketed coordinates, chamber numbers, sheet numbers and years. Never prose."
       }
     },
     "shadows": [],

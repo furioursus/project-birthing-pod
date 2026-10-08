@@ -64,6 +64,11 @@ typography:
     fontSize: "1.2rem"
     fontWeight: 400
     lineHeight: 1.6
+  data:
+    fontFamily: "'Fragment Mono', ui-monospace, monospace"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.4
   label:
     fontFamily: "'Big Shoulders Variable', 'Arial Narrow', sans-serif"
     fontSize: "0.78rem"
@@ -148,12 +153,13 @@ components:
   answer-bubble:
     rounded: "{rounded.bubble}"
     size: "2.3rem"
-  room:
-    backgroundColor: "{colors.sheet}"
+  palace-chamber:
     textColor: "{colors.ink}"
-    typography: "{typography.room}"
-    padding: "0.9rem 1rem 1rem"
-    height: "8rem"
+    typography: "{typography.data}"
+  legend-line:
+    textColor: "{colors.ink}"
+    typography: "{typography.data}"
+    height: "2.75rem"
   stamp-beef:
     textColor: "{colors.redline}"
     typography: "{typography.stamp}"
@@ -198,7 +204,7 @@ components:
 
 Jace's plans are literal plans. Every surface is one drawing sheet: a drenched cyanotype blue ground with a faint white grid, a double-ruled frame with zone markers, and white single-weight linework that draws the mind palace as a floor plan. The draftsman is confident, and the drawing is wrong. Corrections arrive in a red pencil, Jace's own asides arrive in a pale-cyan pencil, and the rare plan that worked gets a gold stamp. The joke lives in the drafting conventions, so the sheet has to read as a real drawing first. The title block, the sheet numbers A-01 to A-14, "Checked by: Nobody" and "Not to scale" all carry it.
 
-Density is a drawing's density: tight labelled cells, hairline dividers and generous open sheet around the main figure. Nothing floats. Every element sits in a ruled cell, a room or the title block, and the walls between cells are the line colour showing through a 2px gap. The world is flat and unlit. Depth comes from line weight, hatching and one darker blue for wells.
+Density is a drawing's density: tight labelled cells, hairline dividers and generous open sheet around the main figure. Nothing floats. Every element sits in a ruled cell, a chamber or the title block, and the walls between cells are the line colour showing through a 2px gap. The world is flat and unlit. Depth comes from line weight, hatching and one darker blue for wells.
 
 Motion is drafting. Linework and pencil notes draw on from left to right with one exponential ease-out. The only element that performs beyond drawing-on is the illusion: Jace stamps a wrong plan APPROVED, strikes it, clouds it in red and dissolves it before the real sheet is drawn.
 
@@ -216,7 +222,7 @@ Motion is drafting. Linework and pencil notes draw on from left to right with on
 A single drenched blue-mana ground, three whites ranked by importance, and three coloured pencils with fixed meanings.
 
 ### Primary
-- **Cyanotype Sheet** (#0f3b78): the ground of every surface, every room and every answer at rest. The blue-mana scheme is a binding brand commitment, so this colour is never swapped or lightened. It is also the `theme-color`, and the favicon tile uses it.
+- **Cyanotype Sheet** (#0f3b78): the ground of every surface, every chamber and every answer at rest. The blue-mana scheme is a binding brand commitment, so this colour is never swapped or lightened. It is also the `theme-color`, and the favicon tile uses it.
 - **Deep Sheet** (#0a2b5a): the darker well. It fills completed survey cells, sits under hatching on a hovered answer, colours text on filled ink buttons and picked answers, and tracks the scrollbar. The body vignette darkens the sheet's edges towards it.
 
 ### Secondary
@@ -229,7 +235,7 @@ A single drenched blue-mana ground, three whites ranked by importance, and three
 ### Neutral
 - **Ink** (#f2f7ff): primary text and the fill of the one primary action per view (the door button, Share, Find your own plan, Take the quiz) and of a picked answer.
 - **Soft Ink** (#c2d6f2): secondary text. It covers ledes, metadata, captions, field labels, zone markers, glossary definitions, the struck word and the door-swing arc.
-- **Line** (#e6effc): the 1.5px structural rule. It covers the sheet frame, button and answer borders, the title-block border, the scale-bar border, the index table border and header rule. It also shows through the 2px gaps between floor-plan rooms and survey cells, so the walls read as line.
+- **Line** (#e6effc): the 1.5px structural rule. It covers the sheet frame, button and answer borders, the title-block border, the scale-bar border, the index table border and header rule. It also shows through the 2px gaps between survey cells, and draws the palace plan's walls at 3px.
 - **Dim Line** (rgb(230 239 252 / 0.5)): the 1px subdivision rule. It covers the inner frame, zone dividers, header and footer rules, title-block cell dividers, scale ticks, table row dividers, the intent box, evidence-chip borders and the quiet-link underline.
 
 ### Measured contrast on the sheet
@@ -257,7 +263,8 @@ Every text token clears WCAG AA (4.5:1) on the plain sheet, and Dim Line clears 
 
 **Display Font:** Big Shoulders Variable (with Arial Narrow, sans-serif), the variable cut with the optical-size axis
 **Body Font:** Atkinson Hyperlegible Next Variable (with system-ui, sans-serif)
-**Label/Mono Font:** Architects Daughter (with cursive), for hand lettering only
+**Hand Font:** Architects Daughter (with cursive), for hand lettering only
+**Data Font:** Fragment Mono (with ui-monospace, monospace), for the record only: legends, bracketed coordinates, chamber numbers, sheet numbers and years. It is never used for prose or headings.
 
 **Character:** Big Shoulders is the draftsman's lettering: condensed, upright capitals that letter the titles, field labels, buttons, sheet numbers and stamps. Atkinson Hyperlegible Next carries every sentence of canon and every reading, because people arriving from a shared link have to read it cold. Architects Daughter is Jace's own hand, and it only ever speaks for him.
 
@@ -269,19 +276,19 @@ The ramp has thirteen steps, each a CSS custom property (`--fs-*`) in `src/style
 - **Title** (700, clamp(2.1rem, 5.6vw, 3.4rem), 1, sentence case, max 24ch): the question prompt, and "Reading you…" in the pencil hand.
 - **Stamp** (800, 1.7rem, 1, 0.08em, uppercase): the status stamp, at the Lede size below 60rem.
 - **Section** (700, 1.6rem, 1.1, 0.02em, uppercase): result-body section headings and the scale-bar value.
-- **Room** (700, 1.35rem, 1.05, balanced wrap): plan names in rooms and in the sheet index, plus the door button at 800. The illusion's pencil notes use this size in the hand.
+- **Room** (700, 1.35rem, 1.05, balanced wrap): plan names in the sheet index, plus the door button at 800. The illusion's pencil notes use this size in the hand.
 - **Hand plan** (400, clamp(1.25rem, 3.2vw, 1.5rem), 1.4): the plan as Jace wrote it, in the intent box.
 - **Lede** (400, 1.2rem, 1.6, Soft Ink): ledes. Below 40rem, sheet-index plan names, the door button and the stamp step down to this size.
 - **Body** (400, 1.0625rem, 1.6, pretty wrap): all reading text, answers included. Measures are capped at 65ch in result sections, 60ch for ledes (46ch in the hall) and 62ch for general notes.
 - **UI** (1.05rem): buttons (700, 0.07em, uppercase), the who's-who summary and terms, result meta, index sheet numbers and years, and pencil notes in the hand.
-- **Small** (400, 0.875rem, 1.55): the footer, room meta, title-block meta, evidence chips, the index status and meta line, the survey sheet number, the key hint and the stamp gloss.
-- **Label** (700, 0.78rem, 1.2, 0.14em, uppercase, Soft Ink): title-block field labels, drawing-info terms, room numbers, table column heads, the intent box label, general-notes heading, title-block meta terms and scale ticks.
+- **Small** (400, 0.875rem, 1.55): the footer, title-block meta, evidence chips, the index status and meta line, the survey sheet number, the key hint and the stamp gloss.
+- **Label** (700, 0.78rem, 1.2, 0.14em, uppercase, Soft Ink): title-block field labels, drawing-info terms, table column heads, the intent box label, general-notes heading, title-block meta terms and scale ticks.
 - **Zone** (600, 0.625rem, 0.05em): zone markers only, the smallest lettering on the sheet.
 
 Numerals in the sheet index are tabular. Headings use `text-wrap: balance` and paragraphs use `text-wrap: pretty`.
 
 ### Named Rules
-**The Three Hands Rule.** Big Shoulders letters, Atkinson reads, and Architects Daughter is Jace: his asides, and his plan as he wrote it. What happened, the reading and the glossary definitions are never set in the pencil hand, and Jace's asides are never set in Atkinson.
+**The Four Hands Rule.** Big Shoulders letters, Atkinson reads, Architects Daughter is Jace, and Fragment Mono is the record. Jace's asides and his plan as he wrote it are the only pencil passages. What happened, the reading and the glossary definitions are never set in the pencil hand. The mono only ever carries data: numbers, coordinates, legend lines and redactions, never a sentence.
 
 **The Drafting Caps Rule.** Uppercase belongs to Big Shoulders lettering: titles, labels, buttons, stamps. Atkinson is never set in capitals, and the pencil hand never is either.
 
@@ -291,7 +298,7 @@ The page is one framed drawing. The body leaves a 10px margin (6px under 40rem) 
 
 Content sits in `main`, which is capped at 78rem and centred, with a fluid gutter of clamp(1rem, 4vw, 2.5rem), tightened to 0.875rem below 40rem. The ground behind everything is a two-level grid: major lines every 120px at 8.5% white and minor lines every 24px at 4% white, under a radial vignette that darkens the edges.
 
-**Floor plan (landing).** The floor plan is a grid whose background is Line, with a 2px gap and 3px padding. Rooms are painted in Sheet, so the walls are the line showing through. At 60rem and above it has six columns with rows of at least 8.5rem. The entrance hall spans columns 2–5 and rows 1–3, the first six rooms flank it, and four of the remaining rooms are double-width. Below 60rem it has two columns, the hall goes full width at the top with the door button in the first viewport, and the rooms follow in pairs.
+**Landing.** At 60rem and above the landing is two columns: the entry (headline, lede, door, credit) at 1fr and the palace plan at 1.1fr. The floor-plan legend and the general notes span the full width below them. Below 60rem everything stacks: entry, plan, legend, notes. The legend runs in two columns of seven at 60rem and above, and one column below. The landing clips horizontal overflow so the underdrawing can bleed off the entry without widening the page.
 
 **Question.** Content is capped at 64rem. At 60rem and above it is two columns: answers and controls in a 44rem column, and the pencil margin note in the right margin, rotated -4°. Below that it is one column with the margin note right-aligned above the answers at -2°.
 
@@ -314,17 +321,18 @@ The system is flat. A blueprint has no light source, so no element casts a shado
 ### Named Rules
 **The Flat Sheet Rule.** Nothing floats above the drawing. If something needs emphasis, give it a heavier line, hatch it or fill it with Ink. Never lift it.
 
-**The Hatch Rule.** The hatch (`repeating-linear-gradient(-45deg, rgb(230 239 252 / 0.13) 0 1.5px, transparent 1.5px 9px)`) marks surveyed space. It covers completed survey cells, the reader's own room, and hovered rooms, answers and evidence chips. At 13% it keeps Redline status text above 3:1 even where a stripe passes behind it. It is a state, never a texture, so it never appears at rest on something unremarkable.
+**The Hatch Rule.** The hatch (`repeating-linear-gradient(-45deg, rgb(230 239 252 / 0.13) 0 1.5px, transparent 1.5px 9px)`) marks surveyed space. It covers completed survey cells, the reader's own chamber, lit chambers in the palace plan, and hovered answers and evidence chips. At 13% it keeps Redline status text above 3:1 even where a stripe passes behind it. It is a state, never a texture, so it never appears at rest on something unremarkable.
 
 ## Shapes
 
-The form language is square-cornered drafting. Controls take a barely softened 2px corner (buttons, answers, evidence chips), the stamp takes 3px, and the only circle is the grid bubble that numbers each answer. Rooms, title-block cells, the survey strip, the scale bar and tables are hard-cornered rectangles.
+The form language is square-cornered drafting. Controls take a barely softened 2px corner (buttons, answers, evidence chips), the stamp takes 3px, and the circles are the grid bubbles that number each answer and the palace plan's chambers and corridor, the one place the drafting turns radial. Title-block cells, the survey strip, the scale bar and tables are hard-cornered rectangles.
 
 Strokes follow drafting conventions:
 - 1.5px Line: object edges.
 - 1px Dim Line: subdivisions.
-- 2px Line gaps: walls between rooms and survey cells.
-- Door swings: drawn at a 1.2px stroke at half opacity, with a solid arc on rooms and a 3 4 dashed arc on the front door.
+- 2px Line gaps: walls between survey cells.
+- 3px Line: the walls of the palace plan (chambers, central chamber, ring corridor, entry). Its passages and inner rings use 1.2px Dim Line.
+- Door swing: a 3 4 dashed arc on the front door only.
 - Redline strokes: 2px with round joins for the revision triangle, and 2.5px for the revision cloud.
 - Strike bars: 0.07–0.075em high.
 - Inline SVG icons (wordmark, back arrow): 1.5px round-capped strokes in `currentColor`.
@@ -360,7 +368,7 @@ Lettered, bordered and quiet until they matter.
 - **Background:** Sheet. Containers are drawn, not filled.
 - **Shadow Strategy:** none (see Elevation & Depth).
 - **Border:** an object gets a 1.5px Line edge and its internal cells get 1px Dim Line dividers.
-- **Internal Padding:** about 1rem 1.1rem in title-block cells (0.85rem 0.9rem below 60rem), and 0.9rem 1rem in rooms.
+- **Internal Padding:** about 1rem 1.1rem in title-block cells (0.85rem 0.9rem below 60rem).
 
 ### Navigation
 - **Sheet head:** the wordmark is a pencil-coloured diamond-and-eye SVG followed by "Jace Plan Quiz" in Big Shoulders at 800, uppercase, 0.08em. On the right is a single Sheet index link at weight 700 with a Dim Line underline that turns Pencil on hover. Both targets are at least 2.75rem tall, and the header sits above a Dim Line rule.
@@ -378,8 +386,20 @@ The verdict panel, an `aside` labelled "Verdict" with a 1.5px Line border and st
 
 At 60rem and above it sticks beside the result. Below 60rem Status and Plan rating share the top row.
 
-### Floor-plan rooms
-Every plan is a room, linked to its result. A room is a Sheet cell inside the line-coloured floor plan, padded 0.9rem 1rem, at least 8rem tall. It shows a sheet number (Label), the plan name (Room type) and, pushed to the bottom, the year plus the status in Redline or Gold. Each room has a door cut into its top wall, drawn as a 2px Sheet gap with a 1.8rem door-swing arc. On hover the room hatches and its title gets a Pencil underline. Focus draws the dashed outline inside the walls (offset -6px). The reader's last result is permanently hatched and carries a pencilled "Yours.".
+### Palace plan
+The landing's map of Jace's mind, drawn as a radial plan in the manner of a Krakoan data page.
+- **Chambers:** a central chamber marked with Jace's sigil in Pencil and labelled `[00]`, inside a ring corridor that's open at the bottom where the entry comes in. Around it, fourteen round chambers, one per plan, in publication order from the lower left, over the top, to the lower right.
+- **Rating is the size:** a chamber's radius is 17 plus 3.2 times the plan's rating, so the 0/10 plan is a pinched cell and the 9/10 plan is the biggest room.
+- **Walls:** each chamber has a 3px Line wall with a doorway gap facing the corridor, a 1.2px Dim Line inner ring, and a two-line passage to the corridor.
+- **Numbers only:** chambers are labelled with their bracketed number in Fragment Mono. The plan names live in the legend, so the map never spoils a result.
+- **Interaction:** chambers link to their case files with the mouse but are out of the tab order and hidden from assistive tech; the legend carries the same links. Pointing at or focusing a chamber or its legend line lights both: the chamber hatches and its wall turns Pencil, and the line turns Pencil.
+- **Yours:** the reader's last result stays hatched with a Pencil wall.
+- **Framing:** crop corners top-left and bottom-right; bracketed coordinates above it (`[mind........(total)]` `[14 plans..........]`, `[unsealed.....(you)]` `[03 of 14..........]`) in Label-size mono; a pencil note below it.
+
+### Floor-plan legend
+Numbers to names, as on a printed plan. A 3px Line rule sits under the "Floor plan" heading, at Section size. Each line is a link at least 2.75rem tall: `[07]`, a 2px dotted Dim Line leader, then the plan name right-aligned, all in Fragment Mono at Small size.
+- **Sealed:** plans the reader hasn't opened on this device show a Soft Ink redaction bar sized to the title (capped at 24ch) instead of the name. Screen readers hear "Sealed plan". Opening a plan's result or case file unseals it, stored in `localStorage`.
+- **Yours:** the reader's last result carries a pencilled "← yours".
 
 ### Survey strip
 Quiz progress drawn as a strip of ten cells in the same wall construction as the floor plan: a Line ground with 2px gaps, 2rem tall. Done cells are Deep Sheet with hatching, and the current cell has a 2px inset Pencil outline. A Label-type sheet number, "Sheet 03 / 10", sits to the right. The whole strip is one `role="img"` with an "Question n of 10" label.
@@ -419,7 +439,7 @@ Every plan in publication order. The table has a 1.5px Line border and a 1.5px L
 The reader's own row carries a pencilled "← yours". It is not hatched, so its Redline status keeps full contrast.
 
 ### Focus, keyboard and reduced motion
-- **Focus:** every focusable element gets a 2px dashed Pencil outline offset 4px, or inset 6px on rooms.
+- **Focus:** every focusable element gets a 2px dashed Pencil outline offset 4px, or inset 6px where noted.
 - **Headings as focus targets:** headings that receive focus programmatically on navigation (`tabindex=-1`) show no ring. The first paint never moves focus.
 - **Keyboard:** keys 1–4 pick answers (`aria-keyshortcuts`), Escape skips the illusion, and the Skip button takes focus when the illusion starts.
 - **Screen readers:** a polite status region announces "Reading your mind." and the share result. The illusion stage is `aria-hidden`, and the real result title is prefixed "Your plan:" for screen readers.

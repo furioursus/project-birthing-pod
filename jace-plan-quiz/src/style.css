@@ -34,6 +34,7 @@
   --display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
   --text: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
   --hand: 'Architects Daughter', cursive;
+  --mono: 'Fragment Mono', ui-monospace, monospace;
   color-scheme: dark;
   scrollbar-color: var(--line-dim) var(--sheet-deep);
 }
@@ -298,8 +299,6 @@ main {
 .drawing-info dt,
 .tb-label,
 .tb-meta dt,
-.room-no,
-.sheet-no,
 .index th[scope='col'],
 .intent-label {
   font: 700 var(--fs-label)/1.2 var(--display);
@@ -412,37 +411,30 @@ main {
   font-size: var(--fs-lede);
 }
 
-/* Landing: the floor plan. Walls are the 2px gaps between rooms. */
+/* Landing: the entry and the mind palace, a radial plan in the Krakoan-data-page manner. */
 
-.floorplan {
+.landing {
+  /* The underdrawing bleeds off the entry; never let it widen the page. */
+  overflow-x: clip;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px;
-  padding: 3px;
-  background: var(--line);
+  gap: clamp(2rem, 5vw, 3.5rem) clamp(2rem, 5vw, 4.5rem);
 }
 
-.hall,
-.room {
+.entry {
   position: relative;
-  background: var(--sheet);
-}
-
-.hall {
   isolation: isolate;
-  overflow: hidden;
-  grid-column: 1 / -1;
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.1rem, 3.5vw, 3rem) clamp(1.75rem, 4vw, 3rem);
+  align-self: start;
+  padding-block: clamp(0.5rem, 3vw, 2rem) 0.5rem;
 }
 
-/* Pencil underdrawing: derived line art of official card art, behind the hall's content.
+/* Pencil underdrawing: derived line art of official card art, behind the entry.
    Faint enough that every text colour keeps its contrast over it. */
 .underdrawing {
   position: absolute;
   z-index: -1;
-  right: -4%;
-  bottom: 0;
-  height: 108%;
+  right: -12%;
+  bottom: -2rem;
+  height: calc(100% + 4rem);
   width: auto;
   max-width: none;
   opacity: 0.16;
@@ -451,34 +443,15 @@ main {
 }
 
 .art-credit {
-  position: absolute;
-  right: clamp(1.1rem, 3.5vw, 3rem);
-  bottom: 0.6rem;
-  max-width: 28ch;
-  margin: 0;
+  max-width: 34ch;
+  margin: 1.75rem 0 0;
   color: var(--ink-soft);
   font-size: var(--fs-label);
   line-height: 1.35;
-  text-align: right;
 }
 
 .art-credit cite {
   font-style: normal;
-}
-
-@media (max-width: 59.99rem) {
-  .underdrawing {
-    right: -18%;
-    height: 100%;
-    opacity: 0.12;
-  }
-
-  .art-credit {
-    position: static;
-    max-width: none;
-    margin-top: 1.25rem;
-    text-align: left;
-  }
 }
 
 .headline {
@@ -515,8 +488,8 @@ main {
   transform: translateY(-0.55em) rotate(-4deg);
 }
 
-.hall .lede {
-  max-width: 46ch;
+.entry .lede {
+  max-width: 34ch;
 }
 
 .door {
@@ -542,91 +515,198 @@ main {
   stroke-width: 1.5;
 }
 
-.room {
+/* The palace plan. Thick walls, thin detail, numbers only. */
+.palace {
+  position: relative;
+  margin: 0;
+  padding: 1.25rem;
+}
+
+/* Crop corners, as on a printed data page. */
+.palace::before,
+.palace::after {
+  content: '';
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 0 solid var(--line);
+  pointer-events: none;
+}
+
+.palace::before {
+  top: 0;
+  left: 0;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.palace::after {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1.5px;
+  border-bottom-width: 1.5px;
+}
+
+.coords {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--ink-soft);
+  font: var(--fs-label) / 1.45 var(--mono);
+  white-space: pre;
+}
+
+.palace-plan {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.palace-plan .pp-wall {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.palace-plan .pp-thin {
+  fill: none;
+  stroke: var(--line-dim);
+  stroke-width: 1.2;
+}
+
+.palace-plan .pp-floor {
+  fill: transparent;
+  transition: fill 160ms var(--ease);
+}
+
+.palace-plan .pp-sigil {
+  fill: none;
+  stroke: var(--pencil);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.palace-plan .pp-sigil-eye,
+.palace-plan .pp-dot {
+  fill: var(--pencil);
+}
+
+.palace-plan .pp-dot {
+  fill: var(--line);
+}
+
+.palace-plan text {
+  fill: var(--ink);
+  font-family: var(--mono);
+  text-anchor: middle;
+}
+
+.palace-plan .is-yours .pp-floor,
+.palace-plan .is-lit .pp-floor {
+  fill: url(#pp-hatch);
+}
+
+.palace-plan .is-yours .pp-wall,
+.palace-plan .is-lit .pp-wall {
+  stroke: var(--pencil);
+}
+
+.palace-note {
+  margin: 0.75rem 0 0;
+  font-size: var(--fs-ui);
+  text-align: right;
+  transform: rotate(-1.5deg);
+}
+
+/* The legend: numbers to names, dot-leadered. Sealed plans are redacted. */
+.legend-wrap h2,
+.general-notes h2 {
+  margin: 0 0 0.75rem;
+  font: 700 var(--fs-label)/1.2 var(--display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.legend-wrap h2 {
+  padding-bottom: 0.6rem;
+  border-bottom: 3px solid var(--line);
+  color: var(--ink);
+  font-size: var(--fs-section);
+  letter-spacing: 0.04em;
+}
+
+.legend {
+  display: grid;
+  gap: 0 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--fs-small) / 1.4 var(--mono);
+}
+
+.legend li {
+  position: relative;
+}
+
+.legend a {
+  display: flex;
+  align-items: baseline;
   gap: 0.35rem;
-  min-height: 8rem;
-  padding: 0.9rem 1rem 1rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 0;
   text-decoration: none;
 }
 
-/* A door in the top wall of every room, with its swing. */
-.room::before,
-.room::after {
-  content: '';
+.legend-leader {
+  flex: 1;
+  min-width: 2ch;
+  border-bottom: 2px dotted var(--line-dim);
+  transform: translateY(-0.25em);
+}
+
+.legend-title {
+  max-width: 70%;
+  text-align: right;
+}
+
+.redacted {
+  display: inline-block;
+  max-width: 100%;
+  height: 0.95em;
+  vertical-align: -0.1em;
+  background: var(--ink-soft);
+}
+
+.legend-yours {
   position: absolute;
-  right: 1rem;
-  width: 1.8rem;
-}
-
-.room::before {
-  top: -2px;
-  height: 2px;
-  background: var(--sheet);
-}
-
-.room::after {
-  top: 0;
-  height: 1.8rem;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M31 0 V31 M31 31 A31 31 0 0 1 0 0' fill='none' stroke='%23e6effc' stroke-opacity='.5' stroke-width='1.2'/%3E%3C/svg%3E")
-    no-repeat center / contain;
-}
-
-.room-title {
-  font: 700 var(--fs-room)/1.05 var(--display);
-  text-wrap: balance;
-}
-
-.room-meta {
-  margin-top: auto;
-  color: var(--ink-soft);
+  right: 0;
+  bottom: -0.35rem;
   font-size: var(--fs-small);
 }
 
-.room-status,
-.result.beef .stamp,
-.illusion-stage.beef .stamp,
-.index .beef .col-status {
-  color: var(--redline);
+.legend .is-lit a,
+.legend a:focus-visible {
+  color: var(--pencil);
 }
 
-.triumph .room-status,
-.result.triumph .stamp,
-.illusion-stage.triumph .stamp,
-.index .triumph .col-status {
-  color: var(--gold);
+.legend .is-lit .legend-leader {
+  border-bottom-color: var(--pencil);
 }
 
 @media (hover: hover) {
-  .room:hover {
-    background-image: var(--hatch);
-  }
-
-  .room:hover .room-title {
+  .legend a:hover .legend-title {
     text-decoration: underline;
     text-decoration-color: var(--pencil);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.15em;
   }
-}
-
-.room:focus-visible {
-  outline-offset: -6px;
 }
 
 .general-notes {
   display: grid;
   gap: 0.5rem 3rem;
-  margin-top: 1.75rem;
-}
-
-.general-notes h2 {
-  margin: 0;
-  font: 700 var(--fs-small)/1.2 var(--display);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
 }
 
 .general-notes p {
@@ -636,41 +716,44 @@ main {
 }
 
 @media (min-width: 60rem) {
+  .landing {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+
+  .entry {
+    padding-top: clamp(2rem, 6vw, 5rem);
+  }
+
+  .legend-wrap,
+  .general-notes {
+    grid-column: 1 / -1;
+  }
+
+  .legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-template-rows: repeat(7, auto);
+  }
+
   .general-notes {
     grid-template-columns: 12rem minmax(0, 62ch) 1fr;
     align-items: baseline;
   }
 }
 
-.room.yours {
-  background-image: var(--hatch);
-}
-
-.room .yours-note {
-  font-size: var(--fs-ui);
-}
-
-.plan-note {
-  margin: 0;
-  font-size: var(--fs-ui);
-  transform: rotate(-1deg);
-  transform-origin: left;
-}
-
-@media (min-width: 60rem) {
-  .floorplan {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: minmax(8.5rem, auto);
+@media (max-width: 59.99rem) {
+  .underdrawing {
+    right: -30%;
+    opacity: 0.12;
   }
 
-  .hall {
-    grid-column: 2 / span 4;
-    grid-row: 1 / span 3;
-    align-self: stretch;
+  .palace {
+    padding: 1rem 0.5rem;
   }
 
-  .room.wide {
-    grid-column: span 2;
+  .coords {
+    flex-wrap: wrap;
   }
 }
 
@@ -715,7 +798,8 @@ main {
 
 .sheet-no {
   white-space: nowrap;
-  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  font: var(--fs-small) / 1 var(--mono);
 }
 
 .prompt {
@@ -1367,8 +1451,7 @@ main {
 
 .index .col-sheet,
 .index .col-year {
-  font: 600 var(--fs-ui)/1.2 var(--display);
-  letter-spacing: 0.06em;
+  font: var(--fs-small) / 1.2 var(--mono);
   white-space: nowrap;
 }
 

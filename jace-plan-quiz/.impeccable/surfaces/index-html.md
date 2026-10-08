@@ -32,9 +32,10 @@ OWN-WORLD:
 STORY: A visitor learns that Jace is a genius who keeps out-thinking himself. They get surveyed, watch Jace's flattering illusion get redlined, laugh at their real plan, share the sheet, and read the field report.
 
 FIRST VIEWPORT:
-- Landing: the floor plan itself. The entrance hall holds the redlined headline: "BRILLIANT" is struck through and "poorly thought-out" is pencilled in above it. The hall also holds a one-line lede and the front door, the "Formulate a plan" button with a door-swing arc.
-- The fourteen plan rooms surround the hall, and each one links to its result.
-- On mobile the hall is full width with the button visible, and the rooms follow below.
+- Landing: two columns. The entry holds the redlined headline ("BRILLIANT" struck through, "poorly thought-out" pencilled in), a one-line lede and the front door, the "Formulate a plan" button with a door-swing arc. Jace's pencil underdrawing sits behind it.
+- Beside the entry is the palace plan: a radial map of Jace's mind in the manner of a Krakoan data page. A central chamber sits inside a ring corridor, ringed by fourteen numbered chambers sized by plan rating.
+- Below both is a dot-leadered legend that redacts every plan the visitor hasn't opened, so the map teases without spoiling.
+- On mobile everything stacks, and the door button stays in the first viewport.
 - Result: a single sheet with the title, the stamp, a scale-bar rating, the plan in Jace's pencil, and Share, all above the fold.
 
 Signature interaction:
