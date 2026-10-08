@@ -102,6 +102,7 @@ export const results: Result[] = [
   {
     id: 'i-expected-as-much',
     title: '“I Expected as Much”',
+    titleNote: 'Nicol Bolas’s parting words, later printed as flavor text.',
     plan: 'Ask Gideon what the plan is. Hear that there isn’t one. Attack Nicol Bolas on his home turf anyway.',
     era: 'Hour of Devastation',
     year: 2017,

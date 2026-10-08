@@ -4,3 +4,10 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Prerendered pages (/plan/<id>, /plans) are served as files; every other path
+# falls back to the app, which routes it client-side.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

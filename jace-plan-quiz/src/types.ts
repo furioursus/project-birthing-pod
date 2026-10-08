@@ -5,6 +5,8 @@ export interface Result {
   id: string;
   /** The result name, as in "You are: <title>". */
   title: string;
+  /** Who said it, when the title is a quote. */
+  titleNote?: string;
   /** The plan itself, in one breath. */
   plan: string;
   era: string;
