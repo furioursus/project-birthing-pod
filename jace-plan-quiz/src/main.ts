@@ -441,7 +441,7 @@ function whosWho(result: Result, open: boolean) {
     'details',
     // People arriving from a shared link are the likeliest non-players, so it starts open for them.
     open ? { class: 'whos-who', open: '' } : { class: 'whos-who' },
-    h('summary', {}, 'Who’s who? Explained for non-players'),
+    h('summary', {}, 'Who’s who? Explained for ', h('span', { class: 'nowrap' }, 'non-players')),
     h(
       'dl',
       {},

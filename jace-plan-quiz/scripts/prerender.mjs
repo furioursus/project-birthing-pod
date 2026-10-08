@@ -130,7 +130,8 @@ function resultCard(r, sheetNo) {
           el(
             'div',
             { fontFamily: 'Big Shoulders', fontWeight: 800, fontSize: titleSize, lineHeight: 0.92, color: C.ink },
-            r.title.toUpperCase(),
+            // Keep the last two words together so a title never ends on a lone word.
+            r.title.toUpperCase().replace(/ (\S+)$/, '\u00a0$1'),
           ),
           el('div', { marginTop: 24, fontFamily: 'Architects Daughter', fontSize: 30, lineHeight: 1.3, color: C.pencil }, plan),
         ),

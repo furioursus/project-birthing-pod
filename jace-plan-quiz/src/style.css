@@ -96,6 +96,10 @@ ins {
   white-space: nowrap;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 .pencil {
   font-family: var(--hand);
   color: var(--pencil);
@@ -178,8 +182,27 @@ ins {
 }
 
 @media (max-width: 40rem) {
+  body {
+    padding: 6px;
+  }
+
   .sheet {
-    --zone: 8px;
+    --zone: 6px;
+    min-height: calc(100dvh - 12px);
+  }
+
+  main {
+    padding-inline: 0.875rem;
+  }
+
+  .sheet-head,
+  .sheet-foot {
+    padding-inline: 0.875rem;
+  }
+
+  .btn-door {
+    padding-inline: 1.4rem;
+    font-size: 1.2rem;
   }
 
   .zones span {
@@ -450,6 +473,7 @@ main {
 }
 
 .btn-door {
+  white-space: nowrap;
   min-height: 3.5rem;
   padding: 1rem 1.75rem 0.95rem;
   font-size: 1.3rem;
@@ -973,6 +997,11 @@ main {
   .title-block .stamp {
     max-width: 100%;
     line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .result.beef .title-block .stamp {
+    white-space: nowrap;
   }
 
   .title-block > .tb-cell:nth-child(n + 3) {
@@ -989,7 +1018,7 @@ main {
   }
 
   .stamp {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .scale-value {
@@ -1158,6 +1187,8 @@ main {
   display: grid;
   justify-items: start;
   gap: 1.25rem;
+  /* Room for the revision cloud, which draws outside this box. */
+  margin-bottom: 2.75rem;
 }
 
 .illusion-title {
@@ -1177,6 +1208,7 @@ main {
 .cloud {
   position: absolute;
   overflow: visible;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -1230,6 +1262,10 @@ main {
 .illusion.step-3 .redline-note {
   opacity: 1;
   clip-path: inset(0 -0.2em 0 0);
+}
+
+.illusion.step-3 .cloud {
+  visibility: visible;
 }
 
 .illusion.step-3 .cloud path {
