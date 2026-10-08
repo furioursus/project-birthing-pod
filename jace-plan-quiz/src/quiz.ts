@@ -34,3 +34,14 @@ export function pickResult(results: Result[], scores: Map<string, number>): Resu
 export function score(questions: Question[], results: Result[], picks: number[]): Result {
   return pickResult(results, tally(questions, picks));
 }
+
+/**
+ * The result Jace confidently shows before he corrects himself: the
+ * best-scoring result with the opposite outcome. Flattering when you beefed
+ * it, gloomy when your plan actually worked.
+ */
+export function illusionFor(results: Result[], scores: Map<string, number>, real: Result): Result {
+  const opposite = results.filter((r) => r.outcome !== real.outcome);
+  if (opposite.length === 0) throw new Error('No opposite outcome to fake');
+  return pickResult(opposite, scores);
+}

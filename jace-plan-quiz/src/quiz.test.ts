@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { questions } from './data/questions';
 import { results } from './data/results';
-import { pickResult, score, tally } from './quiz';
+import { illusionFor, pickResult, score, tally } from './quiz';
 
 const ids = results.map((r) => r.id);
 
@@ -57,6 +57,17 @@ describe('scoring', () => {
     expect(pickResult([second!, first!], tied)).toBe(second);
   });
 
+  it('fakes the best-scoring result with the opposite outcome', () => {
+    const beef = results.find((r) => r.outcome === 'beef')!;
+    const triumphs = results.filter((r) => r.outcome === 'triumph');
+    const scores = new Map([
+      [beef.id, 30],
+      [triumphs[1]!.id, 5],
+    ]);
+    expect(illusionFor(results, scores, beef)).toBe(triumphs[1]);
+    expect(illusionFor(results, new Map(), triumphs[0]!).outcome).toBe('beef');
+  });
+
   it('rejects answers that do not exist', () => {
     expect(() => score(questions, results, [99])).toThrow();
   });
@@ -109,5 +120,12 @@ describe('result spread across every possible set of answers', () => {
 
   it('does not let any one result dominate', () => {
     for (const id of ids) expect(share(id), id).toBeLessThan(0.2);
+  });
+});
+
+describe('glossary', () => {
+  it('explains at least one term on every result', async () => {
+    const { glossaryFor } = await import('./data/glossary');
+    for (const r of results) expect(glossaryFor(r.happened).length, r.id).toBeGreaterThan(0);
   });
 });

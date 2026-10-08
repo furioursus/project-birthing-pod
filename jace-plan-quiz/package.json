@@ -5,13 +5,22 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "test": "vitest run"
   },
   "devDependencies": {
+    "@fontsource/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource/big-shoulders": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.44.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource-variable/big-shoulders": "^5.3.0",
+    "@fontsource/architects-daughter": "^5.3.0"
   }
 }

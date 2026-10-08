@@ -3,31 +3,50 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Which Jace Plan Are You?</title>
+    <title>Which Jace Plan Are You? · Jace Plan Quiz</title>
     <meta name="description" content="A personality quiz: which poorly thought-out Jace Beleren plan are you?" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Jace Plan Quiz" />
     <meta property="og:title" content="Which poorly thought-out Jace Beleren plan are you?" />
     <meta
       property="og:description"
       content="Answer ten questions. Get matched to a moment in Magic story where Jace had a plan. It went great. (It did not go great.)"
     />
-    <meta name="theme-color" content="#0b1530" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0f3b78" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap"
-    />
   </head>
   <body>
-    <main id="app" aria-live="polite"></main>
-    <footer class="site-footer">
-      <p>
-        Jace Plan Quiz is unofficial Fan Content permitted under the
-        <a href="https://company.wizards.com/en/legal/fancontentpolicy">Fan Content Policy</a>. Not approved or endorsed
-        by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
-      </p>
-    </footer>
+    <div class="sheet">
+      <header class="sheet-head">
+        <a class="wordmark" href="/">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 6 L52 22 L32 58 L12 22 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" />
+            <circle cx="32" cy="26" r="6" fill="currentColor" />
+          </svg>
+          Jace Plan Quiz
+        </a>
+        <nav aria-label="Site">
+          <a href="/plans">Sheet index</a>
+        </nav>
+      </header>
+      <main id="app"></main>
+      <footer class="sheet-foot">
+        <p class="legal">
+          Jace Plan Quiz is unofficial Fan Content permitted under the
+          <a href="https://company.wizards.com/en/legal/fancontentpolicy">Fan Content Policy</a>. Not approved or
+          endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the
+          Coast LLC.
+        </p>
+        <dl class="drawing-info">
+          <div><dt>Project</dt><dd>The mind of Jace Beleren</dd></div>
+          <div><dt>Drawn by</dt><dd>J. Beleren</dd></div>
+          <div><dt>Checked by</dt><dd>Nobody</dd></div>
+          <div><dt>Scale</dt><dd>Not to scale</dd></div>
+        </dl>
+      </footer>
+    </div>
+    <p id="status" class="sr-only" role="status"></p>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
