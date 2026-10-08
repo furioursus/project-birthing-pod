@@ -104,8 +104,10 @@ ins {
 /* The sheet: a drawing frame with a double rule, a header strip and a title block. */
 
 .sheet {
+  --zone: 16px;
   position: relative;
   display: flex;
+  padding: var(--zone);
   flex-direction: column;
   min-height: calc(100vh - 20px);
   min-height: calc(100dvh - 20px);
@@ -115,9 +117,74 @@ ins {
 .sheet::before {
   content: '';
   position: absolute;
-  inset: 5px;
+  inset: var(--zone);
   border: 1px solid var(--line-dim);
   pointer-events: none;
+}
+
+/* Zone markers in the band between the frame's two rules, as on a real drawing. */
+.zones {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.zones-x,
+.zones-y {
+  position: absolute;
+  display: flex;
+  color: var(--ink-soft);
+  font: 600 10px/1 var(--display);
+  letter-spacing: 0.05em;
+}
+
+.zones-x {
+  top: 0;
+  left: var(--zone);
+  right: var(--zone);
+  height: var(--zone);
+}
+
+.zones-bottom {
+  top: auto;
+  bottom: 0;
+}
+
+.zones-y {
+  top: var(--zone);
+  bottom: var(--zone);
+  left: 0;
+  width: var(--zone);
+  flex-direction: column;
+}
+
+.zones-right {
+  left: auto;
+  right: 0;
+}
+
+.zones span {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.zones-x span + span {
+  border-left: 1px solid var(--line-dim);
+}
+
+.zones-y span + span {
+  border-top: 1px solid var(--line-dim);
+}
+
+@media (max-width: 40rem) {
+  .sheet {
+    --zone: 8px;
+  }
+
+  .zones span {
+    font-size: 0;
+  }
 }
 
 .sheet-head {
@@ -471,8 +538,43 @@ main {
   outline-offset: -6px;
 }
 
+.general-notes {
+  display: grid;
+  gap: 0.5rem 3rem;
+  margin-top: 1.75rem;
+}
+
+.general-notes h2 {
+  margin: 0;
+  font: 700 0.85rem/1.2 var(--display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.general-notes p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 60rem) {
+  .general-notes {
+    grid-template-columns: 12rem minmax(0, 62ch) 1fr;
+    align-items: baseline;
+  }
+}
+
+.room.yours {
+  background-image: var(--hatch);
+}
+
+.room .yours-note {
+  font-size: 1rem;
+}
+
 .plan-note {
-  margin: 1rem 0 0;
+  margin: 0;
   font-size: 1.1rem;
   transform: rotate(-1deg);
   transform-origin: left;
@@ -604,6 +706,22 @@ main {
   .answer.picked:hover {
     background: var(--ink);
   }
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.arrow {
+  width: 1.1rem;
+  height: 0.7rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .question-foot {
@@ -849,7 +967,12 @@ main {
 /* On small screens the stamp and the rating share a row, so Share stays above the fold. */
 @media (max-width: 59.99rem) {
   .title-block {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+
+  .title-block .stamp {
+    max-width: 100%;
+    line-height: 1.05;
   }
 
   .title-block > .tb-cell:nth-child(n + 3) {
@@ -1009,6 +1132,7 @@ main {
 /* The illusion: Jace shows the wrong plan, then redlines it. */
 
 .illusion {
+  padding-inline: clamp(1.5rem, 4vw, 2.5rem);
   display: grid;
   align-content: center;
   justify-items: start;
@@ -1030,30 +1154,28 @@ main {
   max-width: 100%;
 }
 
+.illusion-wrap {
+  display: grid;
+  justify-items: start;
+  gap: 1.25rem;
+}
+
 .illusion-title {
-  position: relative;
   margin: 0;
   clip-path: inset(0 100% 0 0);
   transition: clip-path 800ms var(--ease);
 }
 
-.illusion-title::after {
-  content: '';
-  position: absolute;
-  left: -0.1em;
-  right: -0.1em;
-  top: 50%;
-  height: 0.06em;
-  background: var(--redline);
-  transform: scaleX(0) rotate(-3deg);
-  transform-origin: left;
-  transition: transform 300ms var(--ease);
+/* One red pencil strike per wrapped line. */
+.strike {
+  background: linear-gradient(var(--redline), var(--redline)) no-repeat 0 55% / 0% 0.07em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 450ms var(--ease);
 }
 
 .cloud {
   position: absolute;
-  width: calc(100% + 32px);
-  height: calc(100% + 32px);
   overflow: visible;
   pointer-events: none;
 }
@@ -1114,9 +1236,9 @@ main {
   stroke-dashoffset: 0;
 }
 
-.illusion.step-3 .illusion-title::after {
-  transform: scaleX(1) rotate(-3deg);
-  transition-delay: 700ms;
+.illusion.step-3 .strike {
+  background-size: 100% 0.07em;
+  transition-delay: 800ms;
 }
 
 .illusion.step-4 .illusion-stage {
@@ -1183,6 +1305,13 @@ main {
   text-transform: uppercase;
 }
 
+.index-meta {
+  display: none;
+  margin-top: 0.2rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
 .index .yours {
   background-image: var(--hatch);
 }
@@ -1199,8 +1328,13 @@ main {
 }
 
 @media (max-width: 40rem) {
-  .index .col-era {
+  .index .col-era,
+  .index .col-year {
     display: none;
+  }
+
+  .index-meta {
+    display: block;
   }
 
   .index th,
@@ -1218,9 +1352,6 @@ main {
     flex: 1 1 100%;
   }
 
-  .index .col-year {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

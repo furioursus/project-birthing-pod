@@ -36,8 +36,8 @@ const C = {
 
 const font = (pkg, file) => readFile(join(dirname(require.resolve(`${pkg}/package.json`)), 'files', file));
 const fonts = [
-  { name: 'Big Shoulders', weight: 700, data: await font('@fontsource/big-shoulders', 'big-shoulders-latin-700-normal.woff') },
-  { name: 'Big Shoulders', weight: 800, data: await font('@fontsource/big-shoulders', 'big-shoulders-latin-800-normal.woff') },
+  { name: 'Big Shoulders', weight: 700, data: await font('@fontsource/big-shoulders-display', 'big-shoulders-display-latin-700-normal.woff') },
+  { name: 'Big Shoulders', weight: 800, data: await font('@fontsource/big-shoulders-display', 'big-shoulders-display-latin-800-normal.woff') },
   { name: 'Architects Daughter', weight: 400, data: await font('@fontsource/architects-daughter', 'architects-daughter-latin-400-normal.woff') },
   {
     name: 'Atkinson',

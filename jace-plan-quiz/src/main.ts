@@ -176,13 +176,18 @@ function resumeQuiz(saved: QuizState | undefined, step: number) {
 const DOOR_ARC = `<svg viewBox="0 0 48 48"><path d="M2 2 V46" /><path d="M2 46 A44 44 0 0 0 46 2" stroke-dasharray="3 4" /></svg>`;
 
 function renderIntro() {
+  const yours = lastResult();
   const rooms = inPublicationOrder.map((r, i) =>
     h(
       'a',
       // Rooms past the first six fill the bottom two rows of the plan; some are double-width.
-      { class: `room ${r.outcome}${[6, 9, 11, 12].includes(i) ? ' wide' : ''}`, href: `/plan/${r.id}` },
+      {
+        class: `room ${r.outcome}${[6, 9, 11, 12].includes(i) ? ' wide' : ''}${r.id === yours ? ' yours' : ''}`,
+        href: `/plan/${r.id}`,
+      },
       h('span', { class: 'room-no' }, sheetOf(r)),
       h('span', { class: 'room-title' }, r.title),
+      r.id === yours && h('span', { class: 'pencil yours-note' }, 'Yours.'),
       h('span', { class: 'room-meta' }, `${r.year} · `, h('span', { class: 'room-status' }, outcomeLabel(r))),
     ),
   );
@@ -211,11 +216,7 @@ function renderIntro() {
             h('ins', { class: 'correction' }, 'poorly thought-out'),
             ' Jace Beleren plan are you?',
           ),
-          h(
-            'p',
-            { class: 'lede' },
-            `Jace Beleren is the most powerful telepath in the Multiverse, a master strategist, and a man who has lost his memory more than once. Answer ${questions.length} questions and find out which of his ${beefCount} documented blunders lives in your heart. Or, if you're very lucky, one of the times it actually worked.`,
-          ),
+          h('p', { class: 'lede' }, 'Ten questions. Jace reads your mind. He gets it wrong first.'),
           h(
             'div',
             { class: 'door' },
@@ -225,7 +226,17 @@ function renderIntro() {
         ),
         ...rooms,
       ),
-      h('p', { class: 'pencil plan-note', 'aria-hidden': 'true' }, 'Every room is one of his plans. Go on in.'),
+      h(
+        'div',
+        { class: 'general-notes' },
+        h('h2', {}, 'General notes'),
+        h(
+          'p',
+          {},
+          `Jace Beleren is the most powerful telepath in the Multiverse, a master strategist, and a man who has lost his memory more than once. Answer ${questions.length} questions and find out which of his ${beefCount} documented blunders lives in your heart. Or, if you're very lucky, one of the times it actually worked.`,
+        ),
+        h('p', { class: 'pencil plan-note', 'aria-hidden': 'true' }, 'Every room is one of his plans. Go on in.'),
+      ),
     ),
   );
 }
@@ -304,7 +315,12 @@ function renderQuestion(state: QuizState) {
         'div',
         { class: 'question-foot' },
         index > 0 &&
-          h('button', { class: 'btn-quiet', type: 'button', onclick: () => history.back() }, '← Rethink the last one'),
+          h(
+            'button',
+            { class: 'btn-quiet back', type: 'button', onclick: () => history.back() },
+            svg('<svg class="arrow" viewBox="0 0 20 12"><path d="M19 6H2M7 1L2 6l5 5" /></svg>'),
+            'Rethink the last one',
+          ),
         h('p', { class: 'key-hint pencil', 'aria-hidden': 'true' }, 'Keys 1–4 answer.'),
       ),
     ),
@@ -358,12 +374,16 @@ function cloudPath(w: number, h: number): string {
 }
 
 function playIllusion(real: Result, fake: Result) {
-  const wrap = h('div', { class: 'illusion-wrap' }, h('p', { class: 'illusion-title' }, fake.title));
+  const wrap = h(
+    'div',
+    { class: 'illusion-wrap' },
+    h('p', { class: 'illusion-title' }, h('span', { class: 'strike' }, fake.title)),
+    h('p', { class: 'stamp' }, 'Approved'),
+  );
   const stage = h(
     'div',
     { class: `illusion-stage ${fake.outcome}`, 'aria-hidden': 'true' },
     wrap,
-    h('p', { class: 'stamp' }, 'Approved'),
     h('p', { class: 'pencil illusion-note' }, 'Obviously. I knew before you did.'),
     h('p', { class: 'pencil redline-note' }, 'Rev 1: that was an illusion. Sorry. Habit.'),
   );
@@ -380,9 +400,11 @@ function playIllusion(real: Result, fake: Result) {
 
   requestAnimationFrame(() => {
     const { width, height } = wrap.getBoundingClientRect();
-    const pad = 16;
+    // The cloud sits a clear margin outside the title and stamp, then bulges outward.
+    const clear = window.innerWidth < 640 ? 8 : 18;
+    const pad = clear + 16;
     const cloud = svg(
-      `<svg class="cloud" viewBox="${-pad} ${-pad} ${width + pad * 2} ${height + pad * 2}" style="inset:${-pad}px"><path d="${cloudPath(width, height)}" pathLength="1" /></svg>`,
+      `<svg class="cloud" viewBox="${-pad} ${-pad} ${width + pad * 2} ${height + pad * 2}" style="inset:${-pad}px;width:${width + pad * 2}px;height:${height + pad * 2}px"><path transform="translate(${-clear} ${-clear})" d="${cloudPath(width + clear * 2, height + clear * 2)}" pathLength="1" /></svg>`,
     );
     wrap.append(cloud);
     requestAnimationFrame(() => section.classList.add('step-1'));
@@ -412,12 +434,13 @@ function scaleBar(result: Result) {
   );
 }
 
-function whosWho(result: Result) {
-  const entries = glossaryFor(result.happened);
+function whosWho(result: Result, open: boolean) {
+  const entries = glossaryFor(`${result.plan} ${result.happened}`);
   if (entries.length === 0) return null;
   return h(
     'details',
-    { class: 'whos-who' },
+    // People arriving from a shared link are the likeliest non-players, so it starts open for them.
+    open ? { class: 'whos-who', open: '' } : { class: 'whos-who' },
     h('summary', {}, 'Who’s who? Explained for non-players'),
     h(
       'dl',
@@ -509,7 +532,7 @@ function renderSheet(result: Result, mine: boolean, revisedFrom: Result | undefi
       h(
         'div',
         { class: 'result-body' },
-        h('section', {}, h('h2', {}, 'What happened'), h('p', {}, result.happened), whosWho(result)),
+        h('section', {}, h('h2', {}, 'What happened'), h('p', {}, result.happened), whosWho(result, !mine)),
         h('section', {}, h('h2', {}, mine ? 'What this says about you' : 'If this is you'), h('p', {}, result.reading)),
         h(
           'section',
@@ -546,6 +569,7 @@ function renderPlans() {
         { scope: 'row', class: 'col-plan' },
         h('a', { href: `/plan/${r.id}` }, r.title),
         r.id === yours && h('span', { class: 'pencil yours-note' }, ' ← yours'),
+        h('span', { class: 'index-meta' }, `${r.era} · ${r.year}`),
       ),
       h('td', { class: 'col-era' }, r.era),
       h('td', { class: 'col-year' }, String(r.year)),
