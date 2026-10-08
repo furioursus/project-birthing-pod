@@ -203,6 +203,15 @@ function renderIntro() {
         h(
           'div',
           { class: 'hall' },
+          // Jace's own portrait, as the pencil underdrawing the plan was drafted over.
+          h('img', {
+            class: 'underdrawing',
+            src: '/art/jace-architect-of-thought.svg',
+            alt: '',
+            width: '1080',
+            height: '1397',
+            decoding: 'async',
+          }),
           h(
             'h1',
             {
@@ -222,6 +231,13 @@ function renderIntro() {
             { class: 'door' },
             h('button', { class: 'btn btn-door', type: 'button', onclick: startQuiz }, 'Formulate a plan'),
             svg(DOOR_ARC),
+          ),
+          h(
+            'p',
+            { class: 'art-credit' },
+            'Underdrawing after ',
+            h('cite', {}, 'Jace, Architect of Thought'),
+            '. Art by Jaime Jones, © 2024 Wizards of the Coast LLC.',
           ),
         ),
         ...rooms,

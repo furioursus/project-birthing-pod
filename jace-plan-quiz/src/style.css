@@ -429,8 +429,56 @@ main {
 }
 
 .hall {
+  isolation: isolate;
+  overflow: hidden;
   grid-column: 1 / -1;
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1.1rem, 3.5vw, 3rem) clamp(1.75rem, 4vw, 3rem);
+}
+
+/* Pencil underdrawing: derived line art of official card art, behind the hall's content.
+   Faint enough that every text colour keeps its contrast over it. */
+.underdrawing {
+  position: absolute;
+  z-index: -1;
+  right: -4%;
+  bottom: 0;
+  height: 108%;
+  width: auto;
+  max-width: none;
+  opacity: 0.16;
+  pointer-events: none;
+  user-select: none;
+}
+
+.art-credit {
+  position: absolute;
+  right: clamp(1.1rem, 3.5vw, 3rem);
+  bottom: 0.6rem;
+  max-width: 28ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-label);
+  line-height: 1.35;
+  text-align: right;
+}
+
+.art-credit cite {
+  font-style: normal;
+}
+
+@media (max-width: 59.99rem) {
+  .underdrawing {
+    right: -18%;
+    height: 100%;
+    opacity: 0.12;
+  }
+
+  .art-credit {
+    position: static;
+    max-width: none;
+    margin-top: 1.25rem;
+    text-align: left;
+  }
 }
 
 .headline {
